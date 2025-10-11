@@ -13,11 +13,11 @@ class PositionController extends Controller
         if (!session('admin_token')) {
             return redirect('/admin/login');
         }
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $token = session('admin_token');
         $positions = [];
         try {
-            $response = Http::withToken($token)->get($apiUrl . '/api/admin/positions');
+            $response = Http::withToken($token)->get($baseUrl . '/api/admin/positions');
             if ($response->successful()) {
                 $positions = $response->json();
                 if (isset($positions['data'])) {
@@ -35,10 +35,10 @@ class PositionController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $position = [];
         try {
-            $response = Http::withToken($token)->get("{$apiUrl}/api/admin/positions/{$id}");
+            $response = Http::withToken($token)->get("{$baseUrl}/api/admin/positions/{$id}");
             if ($response->successful()) {
                 $position = $response->json();
                 if (isset($position['data'])) {
@@ -64,10 +64,10 @@ class PositionController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
             $data = $request->except(['_token']);
-            $response = Http::withToken($token)->post("{$apiUrl}/api/admin/positions", $data);
+            $response = Http::withToken($token)->post("{$baseUrl}/api/admin/positions", $data);
             if ($response->successful()) {
                 return redirect()->route('admin.positions.index')->with('success', 'Thêm chức vụ thành công!');
             } else {
@@ -91,10 +91,10 @@ class PositionController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $position = [];
         try {
-            $response = Http::withToken($token)->get("{$apiUrl}/api/admin/positions/{$id}");
+            $response = Http::withToken($token)->get("{$baseUrl}/api/admin/positions/{$id}");
             if ($response->successful()) {
                 $position = $response->json();
                 if (isset($position['data'])) {
@@ -118,10 +118,10 @@ class PositionController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
             $data = $request->except(['_token', '_method']);
-            $response = Http::withToken($token)->put("{$apiUrl}/api/admin/positions/{$id}", $data);
+            $response = Http::withToken($token)->put("{$baseUrl}/api/admin/positions/{$id}", $data);
             if ($response->successful()) {
                 return redirect()->route('admin.positions.index')->with('success', 'Cập nhật chức vụ thành công!');
             } else {
@@ -145,9 +145,9 @@ class PositionController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
-            $response = Http::withToken($token)->delete("{$apiUrl}/api/admin/positions/{$id}");
+            $response = Http::withToken($token)->delete("{$baseUrl}/api/admin/positions/{$id}");
             if ($response->successful()) {
                 return redirect()->route('admin.positions.index')->with('success', 'Xóa chức vụ thành công!');
             } else {

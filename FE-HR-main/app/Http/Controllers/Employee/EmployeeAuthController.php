@@ -19,9 +19,9 @@ class EmployeeAuthController extends Controller
             'code' => 'required',
             'password' => 'required',
         ]);
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
-            $response = Http::post($apiUrl . '/api/employee/login', [
+            $response = Http::post($baseUrl . '/api/employee/login', [
                 'username' => $request->code, // Gửi đúng trường username cho BE
                 'password' => $request->password,
             ]);

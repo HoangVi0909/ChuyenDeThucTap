@@ -14,13 +14,13 @@ class DashboardController extends Controller
             return redirect('/employee/login');
         }
         $token = session('employee_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
-        $employee = Http::withToken($token)->get($apiUrl.'/api/employee/me')->json() ?? [];
-        $notifications = Http::withToken($token)->get($apiUrl.'/api/employee/notifications')->json();
+        $baseUrl = config('services.backend_api.url');
+        $employee = Http::withToken($token)->get($baseUrl . '/api/employee/me')->json() ?? [];
+        $notifications = Http::withToken($token)->get($baseUrl . '/api/employee/notifications')->json();
         if (isset($notifications['data'])) {
             $notifications = $notifications['data'];
         }
-        $feedbacks = Http::withToken($token)->get($apiUrl.'/api/feedback')->json();
+        $feedbacks = Http::withToken($token)->get($baseUrl . '/api/feedback')->json();
         if (isset($feedbacks['data'])) {
             $feedbacks = $feedbacks['data'];
         }
@@ -28,7 +28,7 @@ class DashboardController extends Controller
         $work_schedules = [];
         $work_schedules_count = 0;
         if (!empty($employee['id'])) {
-            $wsRes = Http::withToken($token)->get($apiUrl.'/api/employee/my-work-schedules?employee_id='.$employee['id'])->json();
+            $wsRes = Http::withToken($token)->get($baseUrl . '/api/employee/my-work-schedules?employee_id=' . $employee['id'])->json();
             if (isset($wsRes['data'])) {
                 $work_schedules = $wsRes['data'];
             } elseif (is_array($wsRes)) {

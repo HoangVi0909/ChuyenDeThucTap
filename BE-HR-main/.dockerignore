@@ -1,0 +1,57 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Dependencies
+/node_modules
+/vendor
+
+# Environment
+.env
+.env.backup
+.env.production
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Laravel
+/storage/*.key
+/storage/logs
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/testing
+/storage/framework/views
+/bootstrap/cache/*
+
+# Testing
+/tests
+phpunit.xml
+.phpunit.result.cache
+
+# Build
+/public/hot
+/public/storage
+/public/build
+
+# Docs
+README.md
+*.md
+!SETUP.md
+
+# Heroku specific (not needed for Railway)
+Procfile
+app.json
+post-deploy.sh
+
+# Development
+test_api.php
+generate_avatars.html

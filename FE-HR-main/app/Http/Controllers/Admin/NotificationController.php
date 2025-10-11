@@ -13,11 +13,11 @@ class NotificationController extends Controller
         if (!session('admin_token')) {
             return redirect('/admin/login');
         }
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $token = session('admin_token');
         $notifications = [];
         try {
-            $response = Http::withToken($token)->get($apiUrl . '/api/admin/notifications');
+            $response = Http::withToken($token)->get($baseUrl . '/api/admin/notifications');
             if ($response->successful()) {
                 $notifications = $response->json();
                 if (isset($notifications['data'])) {
@@ -35,10 +35,10 @@ class NotificationController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $notification = [];
         try {
-            $response = Http::withToken($token)->get("{$apiUrl}/api/admin/notifications/{$id}");
+            $response = Http::withToken($token)->get("{$baseUrl}/api/admin/notifications/{$id}");
             if ($response->successful()) {
                 $notification = $response->json();
                 if (isset($notification['data'])) {
@@ -64,10 +64,10 @@ class NotificationController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
             $data = $request->except(['_token']);
-            $response = Http::withToken($token)->post("{$apiUrl}/api/admin/notifications", $data);
+            $response = Http::withToken($token)->post("{$baseUrl}/api/admin/notifications", $data);
             if ($response->successful()) {
                 return redirect()->route('admin.notifications.index')->with('success', 'Thêm thông báo thành công!');
             } else {
@@ -91,10 +91,10 @@ class NotificationController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $notification = [];
         try {
-            $response = Http::withToken($token)->get("{$apiUrl}/api/admin/notifications/{$id}");
+            $response = Http::withToken($token)->get("{$baseUrl}/api/admin/notifications/{$id}");
             if ($response->successful()) {
                 $notification = $response->json();
                 if (isset($notification['data'])) {
@@ -118,10 +118,10 @@ class NotificationController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
             $data = $request->except(['_token', '_method']);
-            $response = Http::withToken($token)->put("{$apiUrl}/api/admin/notifications/{$id}", $data);
+            $response = Http::withToken($token)->put("{$baseUrl}/api/admin/notifications/{$id}", $data);
             if ($response->successful()) {
                 return redirect()->route('admin.notifications.index')->with('success', 'Cập nhật thông báo thành công!');
             } else {
@@ -145,9 +145,9 @@ class NotificationController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
-            $response = Http::withToken($token)->delete("{$apiUrl}/api/admin/notifications/{$id}");
+            $response = Http::withToken($token)->delete("{$baseUrl}/api/admin/notifications/{$id}");
             if ($response->successful()) {
                 return redirect()->route('admin.notifications.index')->with('success', 'Xóa thông báo thành công!');
             } else {

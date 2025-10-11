@@ -18,7 +18,7 @@ class AuthController extends Controller
     {
         // Debug input
         Log::info('Login attempt with data:', $request->all());
-        
+
         // Validate input
         $request->validate([
             'username' => 'required|string',
@@ -28,13 +28,15 @@ class AuthController extends Controller
         // Demo login check first (để test nhanh)
         if ($request->username === 'admin' && $request->password === '123456') {
             Log::info('Demo login successful');
-            session(['admin' => [
-                'id' => 1,
-                'name' => 'Administrator',
-                'username' => 'admin',
-                'email' => 'admin@example.com',
-                'role' => 'admin'
-            ]]);
+            session([
+                'admin' => [
+                    'id' => 1,
+                    'name' => 'Administrator',
+                    'username' => 'admin',
+                    'email' => 'admin@example.com',
+                    'role' => 'admin'
+                ]
+            ]);
             return redirect()->route('admin.dashboard')->with('success', 'Đăng nhập demo thành công!');
         }
 
@@ -42,27 +44,27 @@ class AuthController extends Controller
 
         // Try different API endpoints
         $endpoints = [
-            'http://127.0.0.1:8000/api/admin/login',
-            'http://127.0.0.1:8000/api/admin/auth/login',
-            'http://127.0.0.1:8000/api/auth/admin/login',
-            'http://127.0.0.1:8000/api/login'
+            config('services.backend_api.url') . '/api/admin/login',
+            config('services.backend_api.url') . '/api/admin/auth/login',
+            config('services.backend_api.url') . '/api/auth/admin/login',
+            config('services.backend_api.url') . '/api/login'
         ];
 
         foreach ($endpoints as $endpoint) {
             try {
                 Log::info("Trying endpoint: " . $endpoint);
-                
+
                 $response = Http::timeout(5)->post($endpoint, [
                     'username' => $request->username,
                     'password' => $request->password
                 ]);
-                
+
                 Log::info("Response status: " . $response->status());
-                
+
                 if ($response->successful()) {
                     $data = $response->json();
                     Log::info("Response data:", $data);
-                    
+
                     // Check for admin data in various response formats
                     $admin = null;
                     if (isset($data['data']['admin'])) {
@@ -74,7 +76,7 @@ class AuthController extends Controller
                     } elseif (isset($data['data']['user'])) {
                         $admin = $data['data']['user'];
                     }
-                    
+
                     if ($admin) {
                         session(['admin' => $admin]);
                         if (isset($data['token'])) {
@@ -83,15 +85,15 @@ class AuthController extends Controller
                         return redirect()->route('admin.dashboard')->with('success', 'Đăng nhập thành công!');
                     }
                 }
-                
+
             } catch (\Exception $e) {
                 Log::error("API error for {$endpoint}: " . $e->getMessage());
                 continue;
             }
         }
-        
+
         Log::info('All endpoints failed, showing error');
-        
+
         return back()
             ->with('error', 'Tên đăng nhập hoặc mật khẩu không đúng. Sử dụng admin/123456 để test demo.')
             ->withInput($request->only('username'));
@@ -104,7 +106,7 @@ class AuthController extends Controller
 
     public function forgot(Request $request)
     {
-        $response = Http::post('http://127.0.0.1:8000/api/auth/forgot-password', [
+        $response = Http::post(config('services.backend_api.url') . '/api/auth/forgot-password', [
             'username' => $request->username
         ]);
         $data = $response->json();
@@ -118,7 +120,7 @@ class AuthController extends Controller
 
     public function changePassword(Request $request)
     {
-        $response = Http::post('http://127.0.0.1:8000/api/auth/change-password', [
+        $response = Http::post(config('services.backend_api.url') . '/api/auth/change-password', [
             'username' => $request->username,
             'old_password' => $request->old_password,
             'new_password' => $request->new_password
@@ -129,7 +131,7 @@ class AuthController extends Controller
 
     public function logout()
     {
-        Http::post('http://127.0.0.1:8000/api/auth/logout');
+        Http::post(config('services.backend_api.url') . '/api/auth/logout');
         session()->forget('admin');
         return redirect()->route('admin.login')->with('message', 'Đã đăng xuất thành công!');
     }

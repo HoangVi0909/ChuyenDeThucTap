@@ -12,18 +12,18 @@ class DashboardController extends Controller
         if (!session('admin_token')) {
             return redirect('/admin/login');
         }
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $token = session('admin_token');
         try {
-            $employees = Http::withToken($token)->get($apiUrl . '/api/admin/employees')->json() ?? [];
-            $departments = Http::withToken($token)->get($apiUrl . '/api/admin/departments')->json() ?? [];
-            $positions = Http::withToken($token)->get($apiUrl . '/api/admin/positions')->json() ?? [];
-            $notifications = Http::withToken($token)->get($apiUrl . '/api/admin/notifications')->json() ?? [];
-            $workSchedules = Http::withToken($token)->get($apiUrl . '/api/admin/work-schedules')->json() ?? [];
+            $employees = Http::withToken($token)->get($baseUrl . '/api/admin/employees')->json() ?? [];
+            $departments = Http::withToken($token)->get($baseUrl . '/api/admin/departments')->json() ?? [];
+            $positions = Http::withToken($token)->get($baseUrl . '/api/admin/positions')->json() ?? [];
+            $notifications = Http::withToken($token)->get($baseUrl . '/api/admin/notifications')->json() ?? [];
+            $workSchedules = Http::withToken($token)->get($baseUrl . '/api/admin/work-schedules')->json() ?? [];
             $stats = [
                 'employees_count' => count($employees),
-                'active_employees' => count(array_filter($employees, function($emp) { 
-                    return isset($emp['status']) && $emp['status'] == 'active'; 
+                'active_employees' => count(array_filter($employees, function ($emp) {
+                    return isset($emp['status']) && $emp['status'] == 'active';
                 })),
                 'departments_count' => count($departments),
                 'positions_count' => count($positions),

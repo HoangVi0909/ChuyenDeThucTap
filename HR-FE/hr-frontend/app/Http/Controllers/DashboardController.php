@@ -9,15 +9,15 @@ class DashboardController extends Controller
     public function index()
     {
         // Tổng số nhân viên
-        $respEmployees = Http::get('http://127.0.0.1:8000/api/employees');
+        $respEmployees = Http::get(config('services.backend_api.url') . '/api/employees');
         $totalEmployees = $respEmployees->successful() ? count($respEmployees->json()['data'] ?? []) : 0;
 
         // Tổng số phòng ban
-        $respDepartments = Http::get('http://127.0.0.1:8000/api/departments');
+        $respDepartments = Http::get(config('services.backend_api.url') . '/api/departments');
         $totalDepartments = $respDepartments->successful() ? count($respDepartments->json()['data'] ?? []) : 0;
 
         // Tổng số vị trí
-        $respPositions = Http::get('http://127.0.0.1:8000/api/positions');
+        $respPositions = Http::get(config('services.backend_api.url') . '/api/positions');
         $totalPositions = $respPositions->successful() ? count($respPositions->json()['data'] ?? []) : 0;
 
         // 5 nhân viên mới nhất

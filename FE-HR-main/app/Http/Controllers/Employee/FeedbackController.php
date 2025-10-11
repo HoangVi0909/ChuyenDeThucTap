@@ -14,14 +14,14 @@ class FeedbackController extends Controller
             'content' => 'required|string|max:1000',
         ]);
         $token = session('employee_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         // Lấy thông tin employee hiện tại
-        $employeeRes = Http::withToken($token)->get($apiUrl . '/api/employee/me');
+        $employeeRes = Http::withToken($token)->get($baseUrl . '/api/employee/me');
         $employee = $employeeRes->json();
         if (!$employee || !isset($employee['id'])) {
             return back()->with('feedback_error', 'Không xác định được nhân viên!');
         }
-        $response = Http::withToken($token)->post($apiUrl . '/api/employee/feedback', [
+        $response = Http::withToken($token)->post($baseUrl . '/api/employee/feedback', [
             'employee_id' => $employee['id'],
             'content' => $request->input('content'),
         ]);

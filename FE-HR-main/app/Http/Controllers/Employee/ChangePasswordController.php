@@ -16,15 +16,15 @@ class ChangePasswordController extends Controller
             'new_password' => 'required|min:6|confirmed',
         ]);
         $token = session('employee_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         // Lấy thông tin employee hiện tại
-        $employeeRes = Http::withToken($token)->get($apiUrl . '/api/employee/me');
+        $employeeRes = Http::withToken($token)->get($baseUrl . '/api/employee/me');
         $employee = $employeeRes->json();
         if (!$employee || !isset($employee['username'])) {
             return back()->with('password_error', 'Không xác định được nhân viên!');
         }
         // Gọi API xác thực mật khẩu hiện tại
-        $checkRes = Http::post($apiUrl . '/api/employee/check-password', [
+        $checkRes = Http::post($baseUrl . '/api/employee/check-password', [
             'username' => $employee['username'],
             'password' => $request->current_password,
         ]);
@@ -32,7 +32,7 @@ class ChangePasswordController extends Controller
             return back()->with('password_error', 'Mật khẩu hiện tại không đúng!');
         }
         // Gọi API đổi mật khẩu
-        $changeRes = Http::withToken($token)->post($apiUrl . '/api/employee/change-password', [
+        $changeRes = Http::withToken($token)->post($baseUrl . '/api/employee/change-password', [
             'new_password' => $request->new_password,
         ]);
         if ($changeRes->successful()) {

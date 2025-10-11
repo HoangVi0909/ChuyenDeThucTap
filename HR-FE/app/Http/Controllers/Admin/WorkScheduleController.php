@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class WorkScheduleController extends Controller
 {
-    private $apiBaseUrl = 'http://127.0.0.1:8000/api';
+    private $apiBaseUrl = config('services.backend_api.url') . '/api';
 
     /**
      * Hiển thị danh sách lịch làm việc
@@ -19,7 +19,7 @@ class WorkScheduleController extends Controller
         if (!session('admin_token')) {
             return redirect('/admin/login');
         }
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $token = session('admin_token');
         $workSchedules = [];
         $employees = [];
@@ -27,7 +27,7 @@ class WorkScheduleController extends Controller
         $page = $request->input('page', 1);
         $perPage = 6;
         try {
-            $wsRes = Http::withToken($token)->get($apiUrl . "/api/admin/work-schedules?page=$page&per_page=$perPage");
+            $wsRes = Http::withToken($token)->get($baseUrl . "/api/admin/work-schedules?page=$page&per_page=$perPage");
             $wsData = $wsRes->json();
             if ($wsRes->successful() && isset($wsData['data'])) {
                 $workSchedules = $wsData['data'];
@@ -39,7 +39,7 @@ class WorkScheduleController extends Controller
             } else {
                 $paginator = new \Illuminate\Pagination\LengthAwarePaginator([], 0, $perPage, $page);
             }
-            $empRes = Http::withToken($token)->get($apiUrl . '/api/admin/employees');
+            $empRes = Http::withToken($token)->get($baseUrl . '/api/admin/employees');
             if ($empRes->successful()) {
                 $employees = $empRes->json();
                 if (isset($employees['data'])) {
@@ -66,9 +66,9 @@ class WorkScheduleController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
-            $employees = Http::withToken($token)->get($apiUrl . '/api/admin/employees')->json() ?? [];
+            $employees = Http::withToken($token)->get($baseUrl . '/api/admin/employees')->json() ?? [];
             if (isset($employees['data'])) {
                 $employees = $employees['data'];
             }
@@ -87,14 +87,14 @@ class WorkScheduleController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
             $data = $request->validate([
                 'employee_id' => 'required|integer|min:1',
                 'work_date' => 'required|date',
                 'shift' => 'required|in:S,C'
             ]);
-            $response = Http::withToken($token)->post($apiUrl . '/api/admin/work-schedules', $data);
+            $response = Http::withToken($token)->post($baseUrl . '/api/admin/work-schedules', $data);
             if ($response->successful()) {
                 return redirect()->route('admin.work-schedules.index')
                     ->with('success', 'Thêm lịch làm việc thành công!');
@@ -122,9 +122,9 @@ class WorkScheduleController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
-            $workSchedule = Http::withToken($token)->get($apiUrl . "/api/admin/work-schedules/{$id}")->json() ?? [];
+            $workSchedule = Http::withToken($token)->get($baseUrl . "/api/admin/work-schedules/{$id}")->json() ?? [];
             if (isset($workSchedule['data'])) {
                 $workSchedule = $workSchedule['data'];
             }
@@ -143,9 +143,9 @@ class WorkScheduleController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
-            $workSchedule = Http::withToken($token)->get($apiUrl . "/api/admin/work-schedules/{$id}")->json() ?? [];
+            $workSchedule = Http::withToken($token)->get($baseUrl . "/api/admin/work-schedules/{$id}")->json() ?? [];
             if (isset($workSchedule['data'])) {
                 $workSchedule = $workSchedule['data'];
             }
@@ -153,7 +153,7 @@ class WorkScheduleController extends Controller
             if (isset($workSchedule['work_date'])) {
                 $workSchedule['work_date'] = date('Y-m-d', strtotime($workSchedule['work_date']));
             }
-            $employees = Http::withToken($token)->get($apiUrl . '/api/admin/employees')->json() ?? [];
+            $employees = Http::withToken($token)->get($baseUrl . '/api/admin/employees')->json() ?? [];
             if (isset($employees['data'])) {
                 $employees = $employees['data'];
             }
@@ -175,14 +175,14 @@ class WorkScheduleController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
             $data = $request->validate([
                 'employee_id' => 'required|integer|min:1',
                 'work_date' => 'required|date',
                 'shift' => 'required|in:S,C'
             ]);
-            $response = Http::withToken($token)->put($apiUrl . "/api/admin/work-schedules/{$id}", $data);
+            $response = Http::withToken($token)->put($baseUrl . "/api/admin/work-schedules/{$id}", $data);
             if ($response->successful()) {
                 return redirect()->route('admin.work-schedules.index')
                     ->with('success', 'Cập nhật lịch làm việc thành công!');
@@ -210,9 +210,9 @@ class WorkScheduleController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
-            $response = Http::withToken($token)->delete($apiUrl . "/api/admin/work-schedules/{$id}");
+            $response = Http::withToken($token)->delete($baseUrl . "/api/admin/work-schedules/{$id}");
             if ($response->successful()) {
                 return redirect()->route('admin.work-schedules.index')
                     ->with('success', 'Xóa lịch làm việc thành công!');

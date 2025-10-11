@@ -13,11 +13,11 @@ class FeedbackController extends Controller
         if (!session('admin_token')) {
             return redirect('/admin/login');
         }
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $token = session('admin_token');
         $feedbacks = [];
         try {
-            $response = Http::withToken($token)->get($apiUrl . '/api/admin/feedback');
+            $response = Http::withToken($token)->get($baseUrl . '/api/admin/feedback');
             if ($response->successful()) {
                 $feedbacks = $response->json();
                 if (isset($feedbacks['data'])) {
@@ -34,11 +34,11 @@ class FeedbackController extends Controller
         if (!session('admin_token')) {
             return redirect('/admin/login');
         }
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $token = session('admin_token');
         $feedback = [];
         try {
-            $response = Http::withToken($token)->get($apiUrl . "/api/admin/feedback/{$id}");
+            $response = Http::withToken($token)->get($baseUrl . "/api/admin/feedback/{$id}");
             if ($response->successful()) {
                 $feedback = $response->json();
                 if (isset($feedback['data'])) {

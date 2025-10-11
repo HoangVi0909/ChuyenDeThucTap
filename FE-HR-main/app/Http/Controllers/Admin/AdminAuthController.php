@@ -15,7 +15,7 @@ class AdminAuthController extends Controller
 
     public function login(Request $request)
     {
-        $response = Http::post('http://127.0.0.1:8000/api/admin/login', [
+        $response = Http::post(config('services.backend_api.url') . '/api/admin/login', [
             'username' => $request->username,
             'password' => $request->password
         ]);
@@ -34,7 +34,7 @@ class AdminAuthController extends Controller
 
     public function forgot(Request $request)
     {
-        $response = Http::post('http://127.0.0.1:8000/api/admin/forgot-password', [
+        $response = Http::post(config('services.backend_api.url') . '/api/admin/forgot-password', [
             'username' => $request->username
         ]);
         $data = $response->json();
@@ -48,7 +48,7 @@ class AdminAuthController extends Controller
 
     public function changePassword(Request $request)
     {
-        $response = Http::post('http://127.0.0.1:8000/api/admin/change-password', [
+        $response = Http::post(config('services.backend_api.url') . '/api/admin/change-password', [
             'username' => $request->username,
             'old_password' => $request->old_password,
             'new_password' => $request->new_password
@@ -61,7 +61,7 @@ class AdminAuthController extends Controller
     {
         $token = session('admin_token');
         if ($token) {
-            Http::withToken($token)->post('http://127.0.0.1:8000/api/admin/logout');
+            Http::withToken($token)->post(config('services.backend_api.url') . '/api/admin/logout');
         }
         session()->forget(['admin', 'admin_token']);
         return redirect()->route('admin.login')->with('message', 'Đã đăng xuất thành công!');

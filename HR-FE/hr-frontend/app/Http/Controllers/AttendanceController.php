@@ -9,28 +9,28 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class AttendanceController extends Controller
 {
-public function index()
-{
-    $response = Http::get('http://127.0.0.1:8000/api/attendances');
+    public function index()
+    {
+        $response = Http::get(config('services.backend_api.url') . '/api/attendances');
 
-    $attendances = collect($response->json()['data'] ?? [])->map(function($item) {
-        $item = (object) $item; // ép attendance thành object
+        $attendances = collect($response->json()['data'] ?? [])->map(function ($item) {
+            $item = (object) $item; // ép attendance thành object
 
-        // ép employee nếu tồn tại
-        if (isset($item->employee)) {
-            $item->employee = (object) $item->employee;
-        }
+            // ép employee nếu tồn tại
+            if (isset($item->employee)) {
+                $item->employee = (object) $item->employee;
+            }
 
-        return $item;
-    });
+            return $item;
+        });
 
-    return view('attendances.index', compact('attendances'));
-}
+        return view('attendances.index', compact('attendances'));
+    }
 
     public function create()
     {
-        $employees = Http::get('http://127.0.0.1:8000/api/employees')->json()['data'] ?? [];
-        return view('attendances.create', ['employees' => collect($employees)->map(fn($e) => (object)$e)]);
+        $employees = Http::get(config('services.backend_api.url') . '/api/employees')->json()['data'] ?? [];
+        return view('attendances.create', ['employees' => collect($employees)->map(fn($e) => (object) $e)]);
     }
 
     public function store(Request $request)
@@ -44,7 +44,7 @@ public function index()
             'note' => 'nullable',
         ]);
 
-        $response = Http::post('http://127.0.0.1:8000/api/attendances', $validated);
+        $response = Http::post(config('services.backend_api.url') . '/api/attendances', $validated);
         if ($response->successful()) {
             return redirect()->route('attendances.index')->with('message', 'Thêm chấm công thành công');
         }
@@ -53,9 +53,9 @@ public function index()
 
     public function edit($id)
     {
-        $attendance = (object) Http::get("http://127.0.0.1:8000/api/attendances/{$id}")->json()['data'];
-        $employees = collect(Http::get('http://127.0.0.1:8000/api/employees')->json()['data'] ?? [])->map(fn($e) => (object)$e);
-        return view('attendances.edit', compact('attendance','employees'));
+        $attendance = (object) Http::get(config('services.backend_api.url') . "/api/attendances/{$id}")->json()['data'];
+        $employees = collect(Http::get(config('services.backend_api.url') . '/api/employees')->json()['data'] ?? [])->map(fn($e) => (object) $e);
+        return view('attendances.edit', compact('attendance', 'employees'));
     }
 
     public function update(Request $request, $id)
@@ -69,7 +69,7 @@ public function index()
             'note' => 'nullable',
         ]);
 
-        $response = Http::put("http://127.0.0.1:8000/api/attendances/{$id}", $validated);
+        $response = Http::put(config('services.backend_api.url') . "/api/attendances/{$id}", $validated);
         if ($response->successful()) {
             return redirect()->route('attendances.index')->with('message', 'Cập nhật thành công');
         }
@@ -78,7 +78,7 @@ public function index()
 
     public function destroy($id)
     {
-        $response = Http::delete("http://127.0.0.1:8000/api/attendances/{$id}");
+        $response = Http::delete(config('services.backend_api.url') . "/api/attendances/{$id}");
         if ($response->successful()) {
             return redirect()->route('attendances.index')->with('message', 'Xóa thành công');
         }

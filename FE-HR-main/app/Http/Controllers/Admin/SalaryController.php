@@ -9,20 +9,20 @@ use Illuminate\Support\Facades\Log;
 
 class SalaryController extends Controller
 {
-    private $apiBaseUrl = 'http://localhost:8000/api';
-    
+    private $baseUrl = config('services.backend_api.url');
+
     /**
      * Hiển thị danh sách lương
      */
     public function index()
     {
         try {
-            $response = Http::timeout(10)->get($this->apiBaseUrl . '/salaries');
-            
+            $response = Http::timeout(10)->get($this->baseUrl . '/api/salaries');
+
             if ($response->successful()) {
                 $salaries = $response->json();
                 Log::info('Salaries loaded from API', ['count' => count($salaries)]);
-                
+
                 return view('admin.salaries.index', [
                     'salaries' => $salaries,
                     'error' => null
@@ -32,7 +32,7 @@ class SalaryController extends Controller
                     'status' => $response->status(),
                     'body' => $response->body()
                 ]);
-                
+
                 return view('admin.salaries.index', [
                     'salaries' => [],
                     'error' => 'Không thể tải dữ liệu từ server backend (HTTP: ' . $response->status() . ')'
@@ -40,7 +40,7 @@ class SalaryController extends Controller
             }
         } catch (\Exception $e) {
             Log::error('Exception loading salaries', ['error' => $e->getMessage()]);
-            
+
             return view('admin.salaries.index', [
                 'salaries' => [],
                 'error' => 'Lỗi kết nối: ' . $e->getMessage()
@@ -54,19 +54,19 @@ class SalaryController extends Controller
     public function create()
     {
         try {
-            $response = Http::timeout(10)->get($this->apiBaseUrl . '/employees');
-            
+            $response = Http::timeout(10)->get($this->baseUrl . '/api/employees');
+
             if ($response->successful()) {
                 $employees = collect($response->json());
                 Log::info('Employees loaded from API', ['count' => $employees->count()]);
-                
+
                 return view('admin.salaries.create', compact('employees'));
             } else {
                 Log::warning('Failed to fetch employees from API', [
                     'status' => $response->status(),
                     'body' => $response->body()
                 ]);
-                
+
                 return back()->withErrors(['error' => 'Không thể tải danh sách nhân viên']);
             }
         } catch (\Exception $e) {
@@ -88,27 +88,27 @@ class SalaryController extends Controller
                 'note' => 'nullable|string|max:1000'
             ]);
 
-            $response = Http::timeout(10)->post($this->apiBaseUrl . '/salaries', $data);
-            
+            $response = Http::timeout(10)->post($this->baseUrl . '/api/salaries', $data);
+
             if ($response->successful()) {
                 return redirect()->route('admin.salaries.index')
                     ->with('success', 'Thêm lương thành công!');
             } else {
                 $error = $response->json();
                 $errorMessage = 'Lỗi khi thêm lương';
-                
+
                 if (isset($error['message'])) {
                     $errorMessage = $error['message'];
                 } elseif (isset($error['errors'])) {
                     $errorMessage = 'Validation errors: ' . json_encode($error['errors']);
                 }
-                
+
                 Log::warning('Salary store failed', [
                     'status' => $response->status(),
                     'error' => $error,
                     'data' => $data
                 ]);
-                
+
                 return back()->withErrors(['error' => $errorMessage])->withInput();
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -125,8 +125,8 @@ class SalaryController extends Controller
     public function show($id)
     {
         try {
-            $response = Http::timeout(10)->get($this->apiBaseUrl . "/salaries/{$id}");
-            
+            $response = Http::timeout(10)->get($this->baseUrl . "/api/salaries/{$id}");
+
             if ($response->successful()) {
                 $salary = $response->json();
                 return view('admin.salaries.show', compact('salary'));
@@ -146,22 +146,22 @@ class SalaryController extends Controller
     {
         try {
             // Load salary data
-            $salaryResponse = Http::timeout(10)->get($this->apiBaseUrl . "/salaries/{$id}");
-            
+            $salaryResponse = Http::timeout(10)->get($this->baseUrl . "/api/salaries/{$id}");
+
             if (!$salaryResponse->successful()) {
                 return back()->withErrors(['error' => 'Không tìm thấy bản ghi lương']);
             }
-            
+
             // Load employees
-            $employeesResponse = Http::timeout(10)->get($this->apiBaseUrl . '/employees');
-            
+            $employeesResponse = Http::timeout(10)->get($this->baseUrl . '/api/employees');
+
             if (!$employeesResponse->successful()) {
                 return back()->withErrors(['error' => 'Không thể tải danh sách nhân viên']);
             }
-            
+
             $salary = $salaryResponse->json();
             $employees = collect($employeesResponse->json());
-            
+
             return view('admin.salaries.edit', compact('salary', 'employees'));
         } catch (\Exception $e) {
             Log::error('Exception loading salary for edit', ['id' => $id, 'error' => $e->getMessage()]);
@@ -182,15 +182,15 @@ class SalaryController extends Controller
                 'note' => 'nullable|string|max:1000'
             ]);
 
-            $response = Http::timeout(10)->put($this->apiBaseUrl . "/salaries/{$id}", $data);
-            
+            $response = Http::timeout(10)->put($this->baseUrl . "/api/salaries/{$id}", $data);
+
             if ($response->successful()) {
                 return redirect()->route('admin.salaries.index')
                     ->with('success', 'Cập nhật lương thành công!');
             } else {
                 $error = $response->json();
                 $errorMessage = isset($error['message']) ? $error['message'] : 'Lỗi khi cập nhật lương';
-                
+
                 return back()->withErrors(['error' => $errorMessage])->withInput();
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -207,15 +207,15 @@ class SalaryController extends Controller
     public function destroy($id)
     {
         try {
-            $response = Http::timeout(10)->delete($this->apiBaseUrl . "/salaries/{$id}");
-            
+            $response = Http::timeout(10)->delete($this->baseUrl . "/api/salaries/{$id}");
+
             if ($response->successful()) {
                 return redirect()->route('admin.salaries.index')
                     ->with('success', 'Xóa lương thành công!');
             } else {
                 $error = $response->json();
                 $errorMessage = isset($error['message']) ? $error['message'] : 'Lỗi khi xóa lương';
-                
+
                 return back()->withErrors(['error' => $errorMessage]);
             }
         } catch (\Exception $e) {

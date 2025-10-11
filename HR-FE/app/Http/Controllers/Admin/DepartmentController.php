@@ -14,11 +14,11 @@ class DepartmentController extends Controller
         if (!session('admin_token')) {
             return redirect('/admin/login');
         }
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $token = session('admin_token');
         $departments = [];
         try {
-            $response = Http::withToken($token)->get($apiUrl . '/api/admin/departments');
+            $response = Http::withToken($token)->get($baseUrl . '/api/admin/departments');
             if ($response->successful()) {
                 $departments = $response->json();
                 if (isset($departments['data'])) {
@@ -38,10 +38,10 @@ class DepartmentController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $department = [];
         try {
-            $response = Http::withToken($token)->get("{$apiUrl}/api/admin/departments/{$id}");
+            $response = Http::withToken($token)->get("{$baseUrl}/api/admin/departments/{$id}");
             if ($response->successful()) {
                 $department = $response->json();
                 if (isset($department['data'])) {
@@ -61,7 +61,7 @@ class DepartmentController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         // Nếu cần lấy thêm dữ liệu liên quan, thêm ở đây
         return view('admin.departments.create');
     }
@@ -73,9 +73,9 @@ class DepartmentController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
-            $response = Http::withToken($token)->post("{$apiUrl}/api/admin/departments", $request->all());
+            $response = Http::withToken($token)->post("{$baseUrl}/api/admin/departments", $request->all());
             if ($response->successful()) {
                 return redirect()->route('admin.departments.index')->with('success', 'Thêm phòng ban thành công!');
             }
@@ -94,16 +94,16 @@ class DepartmentController extends Controller
 
     // Form chỉnh sửa
 
-public function edit($id)
-{
-    if (!session('admin_token')) {
-        return redirect('/admin/login');
-    }
+    public function edit($id)
+    {
+        if (!session('admin_token')) {
+            return redirect('/admin/login');
+        }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $department = [];
         try {
-            $response = Http::withToken($token)->get("{$apiUrl}/api/admin/departments/{$id}");
+            $response = Http::withToken($token)->get("{$baseUrl}/api/admin/departments/{$id}");
             if ($response->successful()) {
                 $department = $response->json();
                 if (isset($department['data'])) {
@@ -119,7 +119,7 @@ public function edit($id)
             return redirect()->route('admin.departments.index')->withErrors('Lỗi kết nối API');
         }
         return view('admin.departments.edit', compact('department'));
-}
+    }
     // Xử lý cập nhật
     public function update(Request $request, $id)
     {
@@ -127,9 +127,9 @@ public function edit($id)
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
-            $response = Http::withToken($token)->put("{$apiUrl}/api/admin/departments/{$id}", $request->all());
+            $response = Http::withToken($token)->put("{$baseUrl}/api/admin/departments/{$id}", $request->all());
             if ($response->successful()) {
                 return redirect()->route('admin.departments.index')->with('success', 'Cập nhật phòng ban thành công!');
             }
@@ -153,9 +153,9 @@ public function edit($id)
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
-            $response = Http::withToken($token)->delete("{$apiUrl}/api/admin/departments/{$id}");
+            $response = Http::withToken($token)->delete("{$baseUrl}/api/admin/departments/{$id}");
             if ($response->successful()) {
                 return redirect()->route('admin.departments.index')->with('success', 'Xóa phòng ban thành công!');
             }

@@ -14,11 +14,11 @@ class EmployeeController extends Controller
         if (!session('admin_token')) {
             return redirect('/admin/login');
         }
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $token = session('admin_token');
         $employees = [];
         try {
-            $response = \Illuminate\Support\Facades\Http::withToken($token)->get($apiUrl . '/api/admin/employees');
+            $response = \Illuminate\Support\Facades\Http::withToken($token)->get($baseUrl . '/api/admin/employees');
             if ($response->successful()) {
                 $employees = $response->json();
                 if (isset($employees['data'])) {
@@ -36,8 +36,8 @@ class EmployeeController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
-        $response = \Illuminate\Support\Facades\Http::withToken($token)->get("{$apiUrl}/api/admin/employees/{$id}");
+        $baseUrl = config('services.backend_api.url');
+        $response = \Illuminate\Support\Facades\Http::withToken($token)->get("{$baseUrl}/api/admin/employees/{$id}");
         $employee = $response->successful() ? $response->json() : [];
         return view('admin.employees.show', ['employee' => $employee]);
     }
@@ -47,10 +47,10 @@ class EmployeeController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
-            $departmentsResponse = \Illuminate\Support\Facades\Http::withToken($token)->get("{$apiUrl}/api/admin/departments");
-            $positionsResponse = \Illuminate\Support\Facades\Http::withToken($token)->get("{$apiUrl}/api/admin/positions");
+            $departmentsResponse = \Illuminate\Support\Facades\Http::withToken($token)->get("{$baseUrl}/api/admin/departments");
+            $positionsResponse = \Illuminate\Support\Facades\Http::withToken($token)->get("{$baseUrl}/api/admin/positions");
             $departments = $departmentsResponse->successful() ? $departmentsResponse->json() : [];
             $positions = $positionsResponse->successful() ? $positionsResponse->json() : [];
             // Nếu dữ liệu là dạng resource collection, lấy về mảng data
@@ -72,10 +72,10 @@ class EmployeeController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
             $data = $request->except(['_token', 'photo']);
-            $response = \Illuminate\Support\Facades\Http::withToken($token)->post("{$apiUrl}/api/admin/employees", $data);
+            $response = \Illuminate\Support\Facades\Http::withToken($token)->post("{$baseUrl}/api/admin/employees", $data);
             if ($response->successful()) {
                 $employee = $response->json();
                 $employeeId = $employee['id'] ?? null;
@@ -83,11 +83,11 @@ class EmployeeController extends Controller
                     $file = $request->file('photo');
                     $uploadResponse = \Illuminate\Support\Facades\Http::withToken($token)
                         ->attach('photo', file_get_contents($file->path()), $file->getClientOriginalName())
-                        ->post("{$apiUrl}/api/admin/employees/{$employeeId}/upload-photo");
+                        ->post("{$baseUrl}/api/admin/employees/{$employeeId}/upload-photo");
                     if ($uploadResponse->successful()) {
                         $photoData = $uploadResponse->json();
                         \Illuminate\Support\Facades\Http::withToken($token)
-                            ->put("{$apiUrl}/api/admin/employees/{$employeeId}", ['photo' => $photoData['photo_path']]);
+                            ->put("{$baseUrl}/api/admin/employees/{$employeeId}", ['photo' => $photoData['photo_path']]);
                     }
                 }
                 return redirect()->route('admin.employees.index')->with('success', 'Thêm nhân viên thành công!');
@@ -111,10 +111,10 @@ class EmployeeController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
-        $employeeResponse = \Illuminate\Support\Facades\Http::withToken($token)->get("{$apiUrl}/api/admin/employees/{$id}");
-        $departmentsResponse = \Illuminate\Support\Facades\Http::withToken($token)->get("{$apiUrl}/api/admin/departments");
-        $positionsResponse = \Illuminate\Support\Facades\Http::withToken($token)->get("{$apiUrl}/api/admin/positions");
+        $baseUrl = config('services.backend_api.url');
+        $employeeResponse = \Illuminate\Support\Facades\Http::withToken($token)->get("{$baseUrl}/api/admin/employees/{$id}");
+        $departmentsResponse = \Illuminate\Support\Facades\Http::withToken($token)->get("{$baseUrl}/api/admin/departments");
+        $positionsResponse = \Illuminate\Support\Facades\Http::withToken($token)->get("{$baseUrl}/api/admin/positions");
         $employee = $employeeResponse->successful() ? $employeeResponse->json() : [];
         $departments = $departmentsResponse->successful() ? $departmentsResponse->json() : [];
         $positions = $positionsResponse->successful() ? $positionsResponse->json() : [];
@@ -124,7 +124,7 @@ class EmployeeController extends Controller
         if (isset($positions['data'])) {
             $positions = $positions['data'];
         }
-    return view('admin.employees.edit', compact('employee', 'departments', 'positions'));
+        return view('admin.employees.edit', compact('employee', 'departments', 'positions'));
     }
     public function update(Request $request, $id)
     {
@@ -132,7 +132,7 @@ class EmployeeController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         try {
             $data = $request->except(['_token', '_method', 'photo']);
             // Chỉ thêm password nếu người dùng nhập mới
@@ -143,7 +143,7 @@ class EmployeeController extends Controller
                 $file = $request->file('photo');
                 $response = \Illuminate\Support\Facades\Http::withToken($token)
                     ->attach('photo', file_get_contents($file->path()), $file->getClientOriginalName())
-                    ->post("{$apiUrl}/api/admin/employees/{$id}/upload-photo");
+                    ->post("{$baseUrl}/api/admin/employees/{$id}/upload-photo");
                 if ($response->successful()) {
                     $photoData = $response->json();
                     $data['photo'] = $photoData['photo_path'];
@@ -151,7 +151,7 @@ class EmployeeController extends Controller
                     return back()->withErrors(['error' => 'Lỗi upload ảnh: ' . $response->body()])->withInput();
                 }
             }
-            $response = \Illuminate\Support\Facades\Http::withToken($token)->put("{$apiUrl}/api/admin/employees/{$id}", $data);
+            $response = \Illuminate\Support\Facades\Http::withToken($token)->put("{$baseUrl}/api/admin/employees/{$id}", $data);
             if ($response->successful()) {
                 return redirect()->route('admin.employees.index')->with('success', 'Cập nhật nhân viên thành công!');
             } else {
@@ -167,8 +167,8 @@ class EmployeeController extends Controller
             return redirect('/admin/login');
         }
         $token = session('admin_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
-        $response = \Illuminate\Support\Facades\Http::withToken($token)->delete("{$apiUrl}/api/admin/employees/{$id}");
+        $baseUrl = config('services.backend_api.url');
+        $response = \Illuminate\Support\Facades\Http::withToken($token)->delete("{$baseUrl}/api/admin/employees/{$id}");
         if ($response->successful()) {
             return redirect()->route('admin.employees.index')->with('success', 'Xóa nhân viên thành công!');
         } else {

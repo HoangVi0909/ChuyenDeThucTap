@@ -10,7 +10,7 @@ class DepartmentController extends Controller
 {
     public function index()
     {
-        $response = Http::get('http://127.0.0.1:8000/api/departments');
+        $response = Http::get(config('services.backend_api.url') . '/api/departments');
 
         if ($response->successful()) {
             $data = $response->json();

@@ -11,7 +11,7 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $response = Http::get('http://127.0.0.1:8000/api/employees');
+        $response = Http::get(config('services.backend_api.url') . '/api/employees');
 
         if ($response->successful()) {
             $data = $response->json();
@@ -41,7 +41,7 @@ class EmployeeController extends Controller
 
     public function show($id)
     {
-        $response = Http::get("http://127.0.0.1:8000/api/employees/{$id}");
+        $response = Http::get(config('services.backend_api.url') . "/api/employees/{$id}");
 
         if ($response->successful()) {
             $employee = (object) $response->json();
@@ -55,30 +55,30 @@ class EmployeeController extends Controller
     }
 
     /** 🟢 Hiển thị form tạo nhân viên */
-public function create()
-{
-    // Gọi API lấy phòng ban
-    $depResponse = Http::get('http://127.0.0.1:8000/api/departments');
-    $posResponse = Http::get('http://127.0.0.1:8000/api/positions');
+    public function create()
+    {
+        // Gọi API lấy phòng ban
+        $depResponse = Http::get(config('services.backend_api.url') . '/api/departments');
+        $posResponse = Http::get(config('services.backend_api.url') . '/api/positions');
 
-    $departments = collect($depResponse->json()['data'] ?? [])->map(function ($item) {
-        return (object) $item;
-    });
+        $departments = collect($depResponse->json()['data'] ?? [])->map(function ($item) {
+            return (object) $item;
+        });
 
-    $positions = collect($posResponse->json()['data'] ?? [])->map(function ($item) {
-        return (object) $item;
-    });
+        $positions = collect($posResponse->json()['data'] ?? [])->map(function ($item) {
+            return (object) $item;
+        });
 
-    return view('employees.create', [
-        'departments' => $departments,
-        'positions' => $positions,
-        'employee' => null, // để _form không báo lỗi khi create
-    ]);
-}
+        return view('employees.create', [
+            'departments' => $departments,
+            'positions' => $positions,
+            'employee' => null, // để _form không báo lỗi khi create
+        ]);
+    }
     /** 🟢 Gửi dữ liệu tạo nhân viên về API */
     public function store(Request $request)
     {
-        $response = Http::post('http://127.0.0.1:8000/api/employees', $request->all());
+        $response = Http::post(config('services.backend_api.url') . '/api/employees', $request->all());
 
         if ($response->successful()) {
             return redirect()->route('employees.index')->with('message', 'Tạo nhân viên thành công');
@@ -87,55 +87,55 @@ public function create()
         return back()->withInput()->with('error', 'Tạo nhân viên thất bại');
     }
     public function edit($id)
-{
-    // Gọi API lấy thông tin nhân viên
-    $empResponse = Http::get("http://127.0.0.1:8000/api/employees/{$id}");
-    $depResponse = Http::get('http://127.0.0.1:8000/api/departments');
-    $posResponse = Http::get('http://127.0.0.1:8000/api/positions');
+    {
+        // Gọi API lấy thông tin nhân viên
+        $empResponse = Http::get(config('services.backend_api.url') . "/api/employees/{$id}");
+        $depResponse = Http::get(config('services.backend_api.url') . '/api/departments');
+        $posResponse = Http::get(config('services.backend_api.url') . '/api/positions');
 
-    if (!$empResponse->successful()) {
-        return redirect()->route('employees.index')->with('error', 'Không tìm thấy nhân viên');
+        if (!$empResponse->successful()) {
+            return redirect()->route('employees.index')->with('error', 'Không tìm thấy nhân viên');
+        }
+
+        // Ép dữ liệu về object để form xử lý
+        $employee = (object) $empResponse->json();
+        $departments = collect($depResponse->json()['data'] ?? [])->map(fn($item) => (object) $item);
+        $positions = collect($posResponse->json()['data'] ?? [])->map(fn($item) => (object) $item);
+
+        return view('employees.edit', compact('employee', 'departments', 'positions'));
     }
 
-    // Ép dữ liệu về object để form xử lý
-    $employee = (object) $empResponse->json();
-    $departments = collect($depResponse->json()['data'] ?? [])->map(fn($item) => (object) $item);
-    $positions   = collect($posResponse->json()['data'] ?? [])->map(fn($item) => (object) $item);
 
-    return view('employees.edit', compact('employee', 'departments', 'positions'));
-}
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'employee_code' => 'required|max:20',
+            'fullname' => 'required|max:100',
+            'cccd' => 'required|max:20',
+            'dob' => 'nullable|date',
+            'gender' => 'required|in:Nam,Nữ,Khác',
+            'education_level' => 'nullable|max:50',
+            'email' => 'required|email',
+            'phone' => 'nullable|max:20',
+            'address' => 'nullable|max:255',
+            'department_id' => 'required|numeric',
+            'position_id' => 'required|numeric',
+        ]);
 
+        $response = Http::put(config('services.backend_api.url') . "/api/employees/{$id}", $validated);
 
-public function update(Request $request, $id)
-{
-    $validated = $request->validate([
-        'employee_code'   => 'required|max:20',
-        'fullname'        => 'required|max:100',
-        'cccd'            => 'required|max:20',
-        'dob'             => 'nullable|date',
-        'gender'          => 'required|in:Nam,Nữ,Khác',
-        'education_level' => 'nullable|max:50',
-        'email'           => 'required|email',
-        'phone'           => 'nullable|max:20',
-        'address'         => 'nullable|max:255',
-        'department_id'   => 'required|numeric',
-        'position_id'     => 'required|numeric',
-    ]);
+        if ($response->successful()) {
+            return redirect()->route('employees.index')->with('message', 'Cập nhật nhân viên thành công!');
+        }
 
-    $response = Http::put("http://127.0.0.1:8000/api/employees/{$id}", $validated);
-
-    if ($response->successful()) {
-        return redirect()->route('employees.index')->with('message', 'Cập nhật nhân viên thành công!');
+        return back()->withErrors(['message' => 'Lỗi khi cập nhật nhân viên']);
     }
-
-    return back()->withErrors(['message' => 'Lỗi khi cập nhật nhân viên']);
-}
 
 
     /** 🔴 Xóa nhân viên */
     public function destroy($id)
     {
-        $response = Http::delete("http://127.0.0.1:8000/api/employees/{$id}");
+        $response = Http::delete(config('services.backend_api.url') . "/api/employees/{$id}");
 
         if ($response->successful()) {
             return redirect()->route('employees.index')->with('message', 'Xóa nhân viên thành công');

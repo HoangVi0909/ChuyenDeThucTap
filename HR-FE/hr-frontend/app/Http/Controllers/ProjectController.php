@@ -10,15 +10,15 @@ class ProjectController extends Controller
     public function index(Request $request)
     {
         // Gửi query params (status, search) tới API
-        $response = Http::get('http://127.0.0.1:8000/api/projects', $request->only(['status','search']));
-        $projects = collect($response->json()['data'] ?? [])->map(fn($p) => (object)$p);
+        $response = Http::get(config('services.backend_api.url') . '/api/projects', $request->only(['status', 'search']));
+        $projects = collect($response->json()['data'] ?? [])->map(fn($p) => (object) $p);
 
         return view('projects.index', compact('projects'));
     }
 
     public function create()
     {
-        $employees = Http::get('http://127.0.0.1:8000/api/employees')->json()['data'] ?? [];
+        $employees = Http::get(config('services.backend_api.url') . '/api/employees')->json()['data'] ?? [];
         return view('projects.create', ['employees' => collect($employees)->map(fn($e) => (object) $e)]);
     }
 
@@ -34,7 +34,7 @@ class ProjectController extends Controller
             'employee_ids' => 'nullable|array',
         ]);
 
-        $response = Http::post('http://127.0.0.1:8000/api/projects', $validated);
+        $response = Http::post(config('services.backend_api.url') . '/api/projects', $validated);
 
         if ($response->successful()) {
             return redirect()->route('projects.index')->with('message', 'Thêm dự án thành công');
@@ -44,8 +44,8 @@ class ProjectController extends Controller
 
     public function edit($id)
     {
-        $project = Http::get("http://127.0.0.1:8000/api/projects/{$id}")->json()['data'] ?? null;
-        $employees = Http::get('http://127.0.0.1:8000/api/employees')->json()['data'] ?? [];
+        $project = Http::get(config('services.backend_api.url') . "/api/projects/{$id}")->json()['data'] ?? null;
+        $employees = Http::get(config('services.backend_api.url') . '/api/employees')->json()['data'] ?? [];
 
         if (!$project) {
             return redirect()->route('projects.index')->with('error', 'Không tìm thấy dự án');
@@ -69,7 +69,7 @@ class ProjectController extends Controller
             'employee_ids' => 'nullable|array',
         ]);
 
-        $response = Http::put("http://127.0.0.1:8000/api/projects/{$id}", $validated);
+        $response = Http::put(config('services.backend_api.url') . "/api/projects/{$id}", $validated);
 
         if ($response->successful()) {
             return redirect()->route('projects.index')->with('message', 'Cập nhật dự án thành công');
@@ -79,7 +79,7 @@ class ProjectController extends Controller
 
     public function destroy($id)
     {
-        $response = Http::delete("http://127.0.0.1:8000/api/projects/{$id}");
+        $response = Http::delete(config('services.backend_api.url') . "/api/projects/{$id}");
 
         if ($response->successful()) {
             return redirect()->route('projects.index')->with('message', 'Xóa dự án thành công');

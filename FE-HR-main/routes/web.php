@@ -12,42 +12,34 @@ use App\Http\Controllers\Admin\SalaryController;
 use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\DashboardController;
 
-// Trang mặc định -> redirect login
+// Trang mặc định -> Dùng test-api cho healthcheck luôn
 Route::get('/', function () {
+    // Nếu là healthcheck từ Railway/monitoring tools, return JSON
+    if (request()->header('User-Agent') && (
+        str_contains(request()->header('User-Agent'), 'healthcheck') ||
+        str_contains(request()->header('User-Agent'), 'bot') ||
+        request()->wantsJson()
+    )) {
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'HR Frontend is running',
+            'service' => 'frontend',
+            'timestamp' => now()->toISOString(),
+        ], 200);
+    }
+
+    // User thường thì redirect login
     return redirect()->route('admin.login');
 });
 
-// Test API connection route
-Route::get('/test-api', function() {
-    try {
-        // Test employees API
-        $employees = Http::get('http://localhost:8000/api/employees');
-        
-        // Test salaries API
-        $salaries = Http::get('http://localhost:8000/api/salaries');
-        
-        return response()->json([
-            'employees' => [
-                'status' => $employees->status(),
-                'success' => $employees->successful(),
-                'count' => $employees->successful() ? count($employees->json()) : 0,
-                'data' => $employees->successful() ? $employees->json() : $employees->body()
-            ],
-            'salaries' => [
-                'status' => $salaries->status(),
-                'success' => $salaries->successful(),
-                'count' => $salaries->successful() ? count($salaries->json()) : 0,
-                'data' => $salaries->successful() ? $salaries->json() : $salaries->body()
-            ]
-        ]);
-        
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-            'line' => $e->getLine(),
-            'file' => $e->getFile()
-        ]);
-    }
+// Health check endpoint for Railway
+Route::get('/test-api', function () {
+    return response()->json([
+        'status' => 'ok',
+        'message' => 'HR Frontend is running',
+        'service' => 'frontend',
+        'timestamp' => now()->toISOString(),
+    ], 200);
 });
 
 // ================= PUBLIC AUTH ROUTES =================
@@ -89,25 +81,26 @@ Route::prefix('employee')->name('employee.')->group(function () {
     Route::post('change-password', [App\Http\Controllers\Employee\ChangePasswordController::class, 'change'])->name('change-password');
     Route::post('send-feedback', [App\Http\Controllers\Employee\FeedbackController::class, 'send'])->name('send-feedback');
 
-    Route::get('info', function() {
+    Route::get('info', function () {
         $token = session('employee_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $employee = null;
         try {
-            $response = \Illuminate\Support\Facades\Http::withToken($token)->get($apiUrl . '/api/employee/me');
+            $response = \Illuminate\Support\Facades\Http::withToken($token)->get($baseUrl . '/api/employee/me');
             if ($response->successful()) {
                 $employee = $response->json();
             }
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+        }
         return view('employee.info', compact('employee'));
     })->name('info');
 
-    Route::get('notifications', function() {
+    Route::get('notifications', function () {
         $token = session('employee_token');
-        $apiUrl = config('app.be_api_url', 'http://127.0.0.1:8000');
+        $baseUrl = config('services.backend_api.url');
         $notifications = [];
         try {
-            $response = \Illuminate\Support\Facades\Http::withToken($token)->get($apiUrl . '/api/employee/notifications');
+            $response = \Illuminate\Support\Facades\Http::withToken($token)->get($baseUrl . '/api/employee/notifications');
             if ($response->successful()) {
                 $data = $response->json();
                 // Nếu là phân trang, lấy ra mảng 'data'
@@ -117,11 +110,12 @@ Route::prefix('employee')->name('employee.')->group(function () {
                     $notifications = $data;
                 }
             }
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+        }
         return view('employee.notifications', compact('notifications'));
     })->name('notifications');
 
-    Route::get('feedback', function() {
+    Route::get('feedback', function () {
         return view('employee.feedback');
     })->name('feedback');
 });

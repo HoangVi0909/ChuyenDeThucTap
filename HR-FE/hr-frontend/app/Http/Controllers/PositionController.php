@@ -10,7 +10,7 @@ class PositionController extends Controller
     // Danh sách vị trí
     public function index()
     {
-        $response = Http::get('http://127.0.0.1:8000/api/positions');
+        $response = Http::get(config('services.backend_api.url') . '/api/positions');
 
         $positions = collect($response->json()['data'] ?? [])->map(fn($item) => (object) $item);
 
@@ -28,7 +28,7 @@ class PositionController extends Controller
             'title' => 'required|string|max:255'
         ]);
 
-        $response = Http::post('http://127.0.0.1:8000/api/positions', $validated);
+        $response = Http::post(config('services.backend_api.url') . '/api/positions', $validated);
 
         if ($response->successful()) {
             return redirect()->route('positions.index')->with('message', 'Thêm vị trí thành công!');
@@ -39,7 +39,7 @@ class PositionController extends Controller
 
     public function edit($id)
     {
-        $response = Http::get("http://127.0.0.1:8000/api/positions/{$id}");
+        $response = Http::get(config('services.backend_api.url') . "/api/positions/{$id}");
 
         if (!$response->successful()) {
             return redirect()->route('positions.index')->with('error', 'Không tìm thấy vị trí');
@@ -55,7 +55,7 @@ class PositionController extends Controller
             'title' => 'required|string|max:255'
         ]);
 
-        $response = Http::put("http://127.0.0.1:8000/api/positions/{$id}", $validated);
+        $response = Http::put(config('services.backend_api.url') . "/api/positions/{$id}", $validated);
 
         if ($response->successful()) {
             return redirect()->route('positions.index')->with('message', 'Cập nhật vị trí thành công!');
@@ -66,7 +66,7 @@ class PositionController extends Controller
 
     public function destroy($id)
     {
-        $response = Http::delete("http://127.0.0.1:8000/api/positions/{$id}");
+        $response = Http::delete(config('services.backend_api.url') . "/api/positions/{$id}");
 
         if ($response->successful()) {
             return redirect()->route('positions.index')->with('message', 'Xóa vị trí thành công');
