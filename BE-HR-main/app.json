@@ -1,0 +1,56 @@
+{
+    "name": "hr-backend",
+    "description": "HR Management System Backend API",
+    "keywords": [
+        "laravel",
+        "php",
+        "hr",
+        "api"
+    ],
+    "website": "https://github.com/ngtuanvuduy9/hr-be",
+    "repository": "https://github.com/ngtuanvuduy9/hr-be",
+    "logo": "",
+    "success_url": "/api/ping",
+    "scripts": {
+        "postdeploy": "php artisan migrate --force && php artisan db:seed --force && php artisan storage:link"
+    },
+    "env": {
+        "APP_KEY": {
+            "description": "Laravel Application Key",
+            "generator": "secret"
+        },
+        "APP_ENV": {
+            "value": "production"
+        },
+        "APP_DEBUG": {
+            "value": "false"
+        },
+        "LOG_LEVEL": {
+            "value": "error"
+        },
+        "SESSION_DRIVER": {
+            "value": "database"
+        },
+        "CACHE_STORE": {
+            "value": "database"
+        },
+        "QUEUE_CONNECTION": {
+            "value": "database"
+        }
+    },
+    "formation": {
+        "web": {
+            "quantity": 1,
+            "size": "basic"
+        }
+    },
+    "addons": [
+        "jawsdb:kitefin"
+    ],
+    "buildpacks": [
+        {
+            "url": "heroku/php"
+        }
+    ],
+    "stack": "heroku-22"
+}

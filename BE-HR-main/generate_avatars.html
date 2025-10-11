@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Generate Avatar</title>
+</head>
+
+<body>
+    <script>
+        // Create canvas
+        const canvas = document.createElement('canvas');
+        canvas.width = 150;
+        canvas.height = 150;
+        const ctx = canvas.getContext('2d');
+
+        // Male avatar
+        function createMaleAvatar() {
+            // Background
+            ctx.fillStyle = '#007bff';
+            ctx.fillRect(0, 0, 150, 150);
+
+            // Face
+            ctx.fillStyle = '#f8d7a4';
+            ctx.beginPath();
+            ctx.arc(75, 60, 40, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Hair
+            ctx.fillStyle = '#8B4513';
+            ctx.beginPath();
+            ctx.arc(75, 45, 35, 0, Math.PI);
+            ctx.fill();
+
+            // Eyes
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(65, 55, 3, 0, Math.PI * 2);
+            ctx.arc(85, 55, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Smile
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(75, 65, 10, 0, Math.PI);
+            ctx.stroke();
+
+            // Body
+            ctx.fillStyle = '#333';
+            ctx.fillRect(50, 100, 50, 50);
+
+            return canvas.toDataURL();
+        }
+
+        function createFemaleAvatar() {
+            // Clear canvas
+            ctx.clearRect(0, 0, 150, 150);
+
+            // Background
+            ctx.fillStyle = '#e91e63';
+            ctx.fillRect(0, 0, 150, 150);
+
+            // Face
+            ctx.fillStyle = '#f8d7a4';
+            ctx.beginPath();
+            ctx.arc(75, 60, 40, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Hair
+            ctx.fillStyle = '#654321';
+            ctx.beginPath();
+            ctx.arc(75, 45, 38, 0, Math.PI);
+            ctx.fill();
+
+            // Eyes
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(65, 55, 3, 0, Math.PI * 2);
+            ctx.arc(85, 55, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Smile
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(75, 65, 10, 0, Math.PI);
+            ctx.stroke();
+
+            // Body
+            ctx.fillStyle = '#9c27b0';
+            ctx.fillRect(50, 100, 50, 50);
+
+            return canvas.toDataURL();
+        }
+
+        // Generate and download
+        const maleAvatar = createMaleAvatar();
+        const femaleAvatar = createFemaleAvatar();
+
+        console.log('Male avatar data URL:', maleAvatar);
+        console.log('Female avatar data URL:', femaleAvatar);
+    </script>
+</body>
+
+</html>
