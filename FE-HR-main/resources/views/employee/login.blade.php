@@ -1,4 +1,5 @@
 @extends('layouts.employee')
+@php($showNavbar = false)
 @section('content')
     <style>
         body {
@@ -72,14 +73,24 @@
                 @csrf
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
-                    <input type="text" class="form-control" name="code" placeholder="Tên đăng nhập" required autofocus>
+                    <input type="text" class="form-control" name="code" placeholder="nv.a" value="nv.a" required
+                        autofocus>
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                    <input type="password" class="form-control" name="password" placeholder="Nhập mật khẩu" required>
+                    <input type="password" class="form-control" name="password" placeholder="password" value="password"
+                        required>
                 </div>
                 <button type="submit" class="btn btn-login w-100 py-2 mt-2">ĐĂNG NHẬP</button>
             </form>
+
+            <hr class="my-4">
+
+            <div class="text-center">
+                <a href="{{ url('/admin/login') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-user-shield me-1"></i>Đăng nhập dành cho Quản trị viên
+                </a>
+            </div>
         </div>
     </div>
 @endsection

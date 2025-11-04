@@ -27,7 +27,8 @@ class Employee extends Authenticatable
         'department_id',
         'username',
         'password',
-        'remember_token'
+        'remember_token',
+        'hourly_rate'
     ];
     public function department()
     {
@@ -41,9 +42,9 @@ class Employee extends Authenticatable
     {
         return $this->hasMany(WorkSchedule::class);
     }
-    public function salaries()
+    public function salaryRecords()
     {
-        return $this->hasMany(Salary::class);
+        return $this->hasMany(SalaryRecord::class);
     }
     public function feedbacks()
     {

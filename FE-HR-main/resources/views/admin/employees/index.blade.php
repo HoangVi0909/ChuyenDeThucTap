@@ -9,12 +9,79 @@
                 <i class="fas fa-plus me-1"></i>Thêm nhân viên
             </a>
         </div>
+
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>{{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        {{-- Bộ lọc --}}
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-light">
+                <h6 class="m-0 fw-bold text-primary"><i class="fas fa-filter me-1"></i>Bộ lọc</h6>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{{ route('admin.employees.index') }}" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="search" class="form-label">Tìm kiếm</label>
+                        <input type="text" class="form-control" id="search" name="search"
+                            value="{{ request('search') }}" placeholder="Tên, email, CCCD, mã NV...">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="department" class="form-label">Phòng ban</label>
+                        <select class="form-select" id="department" name="department_id">
+                            <option value="">Tất cả phòng ban</option>
+                            @if (isset($departments) && is_array($departments))
+                                @foreach ($departments as $department)
+                                    <option value="{{ $department['id'] }}"
+                                        {{ request('department_id') == $department['id'] ? 'selected' : '' }}>
+                                        {{ $department['name'] }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="position" class="form-label">Vị trí</label>
+                        <select class="form-select" id="position" name="position_id">
+                            <option value="">Tất cả vị trí</option>
+                            @if (isset($positions) && is_array($positions))
+                                @foreach ($positions as $position)
+                                    <option value="{{ $position['id'] }}"
+                                        {{ request('position_id') == $position['id'] ? 'selected' : '' }}>
+                                        {{ $position['name'] }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="gender" class="form-label">Giới tính</label>
+                        <select class="form-select" id="gender" name="gender">
+                            <option value="">Tất cả</option>
+                            <option value="Nam" {{ request('gender') == 'Nam' ? 'selected' : '' }}>Nam</option>
+                            <option value="Nữ" {{ request('gender') == 'Nữ' ? 'selected' : '' }}>Nữ</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-filter me-1"></i>Lọc
+                        </button>
+                        <a href="{{ route('admin.employees.index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-sync-alt me-1"></i>Làm mới
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
         {{-- <div class="row mb-4">
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-0 shadow h-100 py-2 bg-gradient-primary text-white">
@@ -82,11 +149,13 @@
                                         <td>{{ $employee['birth_date'] ?? '' }}</td>
                                         <td>
                                             <a href="{{ route('admin.employees.show', $employee['id']) }}"
-                                                class="btn btn-info btn-sm" title="Xem chi tiết"><i class="fas fa-eye"></i></a>
+                                                class="btn btn-info btn-sm" title="Xem chi tiết"><i
+                                                    class="fas fa-eye"></i></a>
                                             <a href="{{ route('admin.employees.edit', $employee['id']) }}"
-                                                class="btn btn-warning btn-sm" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
-                                            <form action="{{ route('admin.employees.destroy', $employee['id']) }}" method="POST"
-                                                style="display:inline-block;">
+                                                class="btn btn-warning btn-sm" title="Chỉnh sửa"><i
+                                                    class="fas fa-edit"></i></a>
+                                            <form action="{{ route('admin.employees.destroy', $employee['id']) }}"
+                                                method="POST" style="display:inline-block;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm" title="Xóa"><i

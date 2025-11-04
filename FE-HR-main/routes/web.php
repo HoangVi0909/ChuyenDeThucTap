@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\WorkScheduleController;
 use App\Http\Controllers\Admin\SalaryController;
 use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Employee\SalaryController as EmployeeSalaryController;
 
 // Trang mặc định -> Dùng test-api cho healthcheck luôn
 Route::get('/', function () {
@@ -51,8 +52,6 @@ Route::prefix('admin')->group(function () {
     Route::get('forgot-password', [AdminAuthController::class, 'showForgotForm'])->name('admin.forgot');
     Route::post('forgot-password', [AdminAuthController::class, 'forgot'])->name('admin.forgot.post');
 
-    Route::get('change-password', [AdminAuthController::class, 'showChangePasswordForm'])->name('admin.change_password');
-    Route::post('change-password', [AdminAuthController::class, 'changePassword'])->name('admin.change_password.post');
 
     Route::post('logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });
@@ -66,9 +65,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('departments', DepartmentController::class);
     Route::resource('positions', PositionController::class);
     Route::resource('notifications', NotificationController::class);
+    Route::view('internal-notifications', 'admin.notifications')->name('internal-notifications');
     Route::resource('salaries', SalaryController::class);
+    
+    // Salary management additional routes
+    Route::post('salaries/calculate', [SalaryController::class, 'calculateSalary'])->name('salaries.calculate');
+    Route::post('salaries/approve', [SalaryController::class, 'approve'])->name('salaries.approve');
+    Route::post('salaries/mark-as-paid', [SalaryController::class, 'markAsPaid'])->name('salaries.mark-as-paid');
+    
     Route::resource('work-schedules', WorkScheduleController::class);
+    
+    // Resignation requests
+    Route::get('resignation-requests', [App\Http\Controllers\Admin\ResignationRequestController::class, 'index'])->name('resignation-requests.index');
+    Route::get('resignation-requests/{id}', [App\Http\Controllers\Admin\ResignationRequestController::class, 'show'])->name('resignation-requests.show');
+    Route::patch('resignation-requests/{id}/status', [App\Http\Controllers\Admin\ResignationRequestController::class, 'updateStatus'])->name('resignation-requests.update-status');
     Route::resource('feedback', FeedbackController::class);
+    
+    Route::view('leave-requests', 'admin.leave_requests')->name('leave-requests.index');
 });
 
 // ================= EMPLOYEE AUTH ROUTES =================
@@ -78,6 +91,9 @@ Route::prefix('employee')->name('employee.')->group(function () {
     Route::post('login', [App\Http\Controllers\Employee\EmployeeAuthController::class, 'login'])->name('login.post');
     Route::post('logout', [App\Http\Controllers\Employee\EmployeeAuthController::class, 'logout'])->name('logout');
     Route::get('dashboard', [App\Http\Controllers\Employee\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('work-schedule', [App\Http\Controllers\Employee\DashboardController::class, 'workSchedule'])->name('work-schedule');
+    Route::get('salary', [EmployeeSalaryController::class, 'index'])->name('salary');
+    Route::get('resignation', [App\Http\Controllers\Employee\DashboardController::class, 'resignation'])->name('resignation');
     Route::post('change-password', [App\Http\Controllers\Employee\ChangePasswordController::class, 'change'])->name('change-password');
     Route::post('send-feedback', [App\Http\Controllers\Employee\FeedbackController::class, 'send'])->name('send-feedback');
 

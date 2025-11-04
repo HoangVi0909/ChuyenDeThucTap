@@ -73,30 +73,4 @@ class AuthController extends Controller
         return back()->with('success', 'Link đặt lại mật khẩu đã được gửi đến email của bạn.');
     }
 
-    public function showChangePasswordForm()
-    {
-        return view('admin.auth.change_password');
-    }
-
-    public function changePassword(Request $request)
-    {
-        $request->validate([
-            'current_password' => 'required|string',
-            'new_password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $admin = Auth::guard('admin')->user();
-
-        if (!Hash::check($request->current_password, $admin->password)) {
-            return back()->withErrors([
-                'current_password' => 'Mật khẩu hiện tại không đúng.'
-            ]);
-        }
-
-        $admin->update([
-            'password' => Hash::make($request->new_password)
-        ]);
-
-        return back()->with('success', 'Đổi mật khẩu thành công!');
-    }
 }

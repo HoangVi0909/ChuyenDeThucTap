@@ -35,7 +35,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{{ route('admin.dashboard') }}">
-                <i class="fas fa-building me-2"></i>HR Management
+                <i class="fas fa-building me-2"></i>quản lí nhân sự
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -44,45 +44,55 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.dashboard') }}">
-                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                            trang chủ
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.employees.index') }}">
-                            <i class="fas fa-users me-1"></i>Nhân viên
+                            Nhân viên
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.departments.index') }}">
-                            <i class="fas fa-building me-1"></i>Phòng ban
+                            Phòng ban
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.positions.index') }}">
-                            <i class="fas fa-user-tie me-1"></i>Chức vụ
+                            Chức vụ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.salaries.index') }}">
+                            Lương
                         </a>
                     </li>
                     {{-- <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.salaries.index') }}">
-                            <i class="fas fa-money-bill-wave me-1"></i>Lương
+                        <a class="nav-link" href="{{ route('admin.leave-requests.index') }}">
+                            Đơn xin nghỉ phép
                         </a>
                     </li> --}}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.work-schedules.index') }}">
-                            <i class="fas fa-calendar-alt me-1"></i>Lịch làm việc
+                            Lịch làm việc
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.notifications.index') }}">
-                            <i class="fas fa-bell me-1"></i>Thông báo
+                        <a class="nav-link" href="{{ route('admin.resignation-requests.index') }}">
+                            Đơn xin nghỉ phép
                         </a>
                     </li>
+                    {{-- <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.internal-notifications') }}">
+                            Thông báo nội bộ
+                        </a>
+                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.feedback.index') }}">
-                            <i class="fas fa-comments me-1"></i>Phản hồi
+                            Phản hồi
                         </a>
                     </li>
-                    @if(session('admin'))
+                    @if (session('admin'))
                         <li class="nav-item">
                             <form action="{{ route('admin.logout') }}" method="POST" class="d-inline">
                                 @csrf

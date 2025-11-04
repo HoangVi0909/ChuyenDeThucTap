@@ -94,7 +94,7 @@
                                     <i class="fas fa-user me-2 text-muted"></i>Tên đăng nhập
                                 </label>
                                 <input type="text" name="username" id="username" class="form-control" required
-                                    value="{{ old('username') }}" placeholder="Nhập tên đăng nhập hoặc email">
+                                    value="admin" placeholder="admin">
                                 @error('username')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
@@ -105,7 +105,7 @@
                                     <i class="fas fa-lock me-2 text-muted"></i>Mật khẩu
                                 </label>
                                 <input type="password" name="password" id="password" class="form-control" required
-                                    placeholder="Nhập mật khẩu">
+                                    value="admin123" placeholder="admin123">
                                 @error('password')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
@@ -125,6 +125,12 @@
                         </div> --}}
 
                         <hr class="my-4">
+
+                        <div class="text-center mb-3">
+                            <a href="{{ url('/employee/login') }}" class="btn btn-outline-info">
+                                <i class="fas fa-user-tie me-2"></i>Đăng nhập dành cho Nhân viên
+                            </a>
+                        </div>
 
                         <div class="alert alert-light border-0 text-center mb-0">
                             <small class="text-muted">

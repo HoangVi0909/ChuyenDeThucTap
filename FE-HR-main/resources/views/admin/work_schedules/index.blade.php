@@ -63,6 +63,54 @@
                     </div>
                 @endif
 
+                {{-- Bộ lọc tìm kiếm --}}
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 bg-light">
+                        <h6 class="m-0 fw-bold text-info"><i class="fas fa-filter me-1"></i>Bộ lọc</h6>
+                    </div>
+                    <div class="card-body">
+                        <form method="GET" action="{{ route('admin.work-schedules.index') }}" class="row g-3">
+                            <div class="col-md-3">
+                                <label for="employee_search" class="form-label">Tìm nhân viên</label>
+                                <input type="text" class="form-control" id="employee_search" name="employee_search"
+                                    value="{{ request('employee_search') }}" placeholder="Tên, mã nhân viên...">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="shift" class="form-label">Ca làm việc</label>
+                                <select class="form-select" id="shift" name="shift">
+                                    <option value="">Tất cả ca</option>
+                                    <option value="S" {{ request('shift') == 'S' ? 'selected' : '' }}>Ca sáng</option>
+                                    <option value="C" {{ request('shift') == 'C' ? 'selected' : '' }}>Ca chiều</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="date_from" class="form-label">Từ ngày</label>
+                                <input type="date" class="form-control" id="date_from" name="date_from"
+                                    value="{{ request('date_from') }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="date_to" class="form-label">Đến ngày</label>
+                                <input type="date" class="form-control" id="date_to" name="date_to"
+                                    value="{{ request('date_to') }}">
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label d-block">&nbsp;</label>
+                                <button type="submit" class="btn btn-info w-100">
+                                    <i class="fas fa-filter"></i> Lọc
+                                </button>
+                            </div>
+                            <div class="col-12">
+                                <a href="{{ route('admin.work-schedules.index') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-sync-alt me-1"></i>Làm mới
+                                </a>
+                                <small class="text-muted ms-3">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Có thể tìm kiếm theo tên nhân viên, lọc theo ca làm việc và khoảng thời gian
+                                </small>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover align-middle">
                         <thead class="table-dark">

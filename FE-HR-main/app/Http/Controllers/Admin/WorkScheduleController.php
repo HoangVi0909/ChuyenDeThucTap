@@ -30,8 +30,35 @@ class WorkScheduleController extends Controller
         $error = null;
         $page = $request->input('page', 1);
         $perPage = 6;
+        
         try {
-            $wsRes = Http::withToken($token)->get($baseUrl . "/api/admin/work-schedules?page=$page&per_page=$perPage");
+            // Tạo query parameters cho API
+            $queryParams = [
+                'page' => $page,
+                'per_page' => $perPage
+            ];
+            
+            // Thêm các tham số lọc
+            if ($request->has('employee_search') && $request->employee_search) {
+                $queryParams['employee_search'] = $request->employee_search;
+            }
+            if ($request->has('shift') && $request->shift) {
+                $queryParams['shift'] = $request->shift;
+            }
+            if ($request->has('date_from') && $request->date_from) {
+                $queryParams['date_from'] = $request->date_from;
+            }
+            if ($request->has('date_to') && $request->date_to) {
+                $queryParams['date_to'] = $request->date_to;
+            }
+            
+            // Gọi API với các tham số lọc
+            $url = $baseUrl . '/api/admin/work-schedules';
+            if (!empty($queryParams)) {
+                $url .= '?' . http_build_query($queryParams);
+            }
+            
+            $wsRes = Http::withToken($token)->get($url);
             $wsData = $wsRes->json();
             if ($wsRes->successful() && isset($wsData['data'])) {
                 $workSchedules = $wsData['data'];
@@ -43,6 +70,8 @@ class WorkScheduleController extends Controller
             } else {
                 $paginator = new \Illuminate\Pagination\LengthAwarePaginator([], 0, $perPage, $page);
             }
+            
+            // Lấy danh sách nhân viên
             $empRes = Http::withToken($token)->get($baseUrl . '/api/admin/employees');
             if ($empRes->successful()) {
                 $employees = $empRes->json();
@@ -53,7 +82,9 @@ class WorkScheduleController extends Controller
         } catch (\Exception $e) {
             $error = 'Lỗi kết nối: ' . $e->getMessage();
             $paginator = new \Illuminate\Pagination\LengthAwarePaginator([], 0, $perPage, $page);
+            Log::error('WorkSchedule index error: ' . $e->getMessage());
         }
+        
         return view('admin.work_schedules.index', [
             'workSchedules' => $paginator,
             'employees' => collect($employees),

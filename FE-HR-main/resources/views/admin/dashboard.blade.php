@@ -166,19 +166,19 @@
                     <div class="card-body">
                         <div class="list-group list-group-flush">
                             <div class="list-group-item d-flex justify-content-between align-items-center">
-                                Database
-                                <span class="badge bg-success rounded-pill">Online</span>
+                                Dữ liệu
+                                <span class="badge bg-success rounded-pill">Hoạt động</span>
                             </div>
                             <div class="list-group-item d-flex justify-content-between align-items-center">
                                 API Backend
-                                <span class="badge bg-success rounded-pill">Running</span>
+                                <span class="badge bg-success rounded-pill">Chạy</span>
                             </div>
                             <div class="list-group-item d-flex justify-content-between align-items-center">
-                                Authentication
-                                <span class="badge bg-success rounded-pill">Active</span>
+                                Xác thực
+                                <span class="badge bg-success rounded-pill">Hoạt động</span>
                             </div>
                             <div class="list-group-item d-flex justify-content-between align-items-center">
-                                Last Updated
+                                Cập nhật lần cuối
                                 <span class="badge bg-primary rounded-pill">{{ date('H:i') }}</span>
                             </div>
                         </div>
@@ -327,8 +327,8 @@
             @endif --}}
 
 
-            <!-- Quick Actions -->
-            {{-- <div class="row">
+        <!-- Quick Actions -->
+        {{-- <div class="row">
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header bg-secondary text-white">
@@ -363,5 +363,5 @@
                     </div>
                 </div>
             </div> --}}
-        </div>
+    </div>
 @endsection

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class EmployeeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         if (!session('admin_token')) {
             return redirect('/admin/login');
@@ -17,8 +17,46 @@ class EmployeeController extends Controller
         $baseUrl = config('services.backend_api.url');
         $token = session('admin_token');
         $employees = [];
+        $departments = [];
+        $positions = [];
+        
         try {
-            $response = \Illuminate\Support\Facades\Http::withToken($token)->get($baseUrl . '/api/admin/employees');
+            // Lấy danh sách phòng ban cho dropdown
+            $deptResponse = Http::withToken($token)->get($baseUrl . '/api/admin/departments');
+            if ($deptResponse->successful()) {
+                $deptData = $deptResponse->json();
+                $departments = isset($deptData['data']) ? $deptData['data'] : $deptData;
+            }
+            
+            // Lấy danh sách vị trí cho dropdown
+            $posResponse = Http::withToken($token)->get($baseUrl . '/api/admin/positions');
+            if ($posResponse->successful()) {
+                $posData = $posResponse->json();
+                $positions = isset($posData['data']) ? $posData['data'] : $posData;
+            }
+            
+            // Tạo query parameters cho API
+            $queryParams = [];
+            if ($request->has('search') && $request->search) {
+                $queryParams['search'] = $request->search;
+            }
+            if ($request->has('department_id') && $request->department_id) {
+                $queryParams['department_id'] = $request->department_id;
+            }
+            if ($request->has('position_id') && $request->position_id) {
+                $queryParams['position_id'] = $request->position_id;
+            }
+            if ($request->has('gender') && $request->gender) {
+                $queryParams['gender'] = $request->gender;
+            }
+            
+            // Gọi API với query parameters
+            $url = $baseUrl . '/api/admin/employees';
+            if (!empty($queryParams)) {
+                $url .= '?' . http_build_query($queryParams);
+            }
+            
+            $response = Http::withToken($token)->get($url);
             if ($response->successful()) {
                 $employees = $response->json();
                 if (isset($employees['data'])) {
@@ -27,19 +65,48 @@ class EmployeeController extends Controller
             }
         } catch (\Exception $e) {
             $employees = [];
+            Log::error('Employee index error: ' . $e->getMessage());
         }
-        return view('admin.employees.index', compact('employees'));
+        
+        return view('admin.employees.index', compact('employees', 'departments', 'positions'));
     }
     public function show($id)
     {
         if (!session('admin_token')) {
             return redirect('/admin/login');
         }
+        
         $token = session('admin_token');
         $baseUrl = config('services.backend_api.url');
-        $response = \Illuminate\Support\Facades\Http::withToken($token)->get("{$baseUrl}/api/admin/employees/{$id}");
-        $employee = $response->successful() ? $response->json() : [];
-        return view('admin.employees.show', ['employee' => $employee]);
+        
+        try {
+            // Lấy thông tin nhân viên
+            $employeeResponse = Http::withToken($token)->get("{$baseUrl}/api/admin/employees/{$id}");
+            $employee = $employeeResponse->successful() ? $employeeResponse->json() : [];
+            
+            // Lấy lịch sử lương của nhân viên
+            $salariesResponse = Http::withToken($token)->get("{$baseUrl}/api/admin/salary-management", [
+                'employee_id' => $id
+            ]);
+            
+            $salaries = [];
+            if ($salariesResponse->successful()) {
+                $salaryData = $salariesResponse->json();
+                if (isset($salaryData['success']) && $salaryData['success'] && isset($salaryData['data']['data'])) {
+                    $salaries = $salaryData['data']['data'];
+                } elseif (isset($salaryData['data'])) {
+                    $salaries = is_array($salaryData['data']) ? $salaryData['data'] : [];
+                }
+            }
+            
+            return view('admin.employees.show', [
+                'employee' => $employee,
+                'salaries' => $salaries
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Employee show error: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Lỗi khi tải thông tin nhân viên']);
+        }
     }
     public function create()
     {

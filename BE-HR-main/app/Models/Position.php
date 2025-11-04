@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Position extends Model
 {
     use HasFactory;
-    protected $fillable = ['name'];
+        protected $fillable = ['name', 'allowance'];
 
     public function employees()
     {

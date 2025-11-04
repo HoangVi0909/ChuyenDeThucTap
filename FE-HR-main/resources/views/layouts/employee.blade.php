@@ -23,40 +23,63 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="{{ route('employee.dashboard') }}">
-                <i class="fas fa-user-graduate me-2"></i>Thông tin nhân viên
-            </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('employee.dashboard') }}">Trang chủ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Thông báo</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Góp ý</a>
-                    </li>
-                    {{-- <li class="nav-item">
+    @if ((!isset($showNavbar) || $showNavbar !== false) && session('employee_token'))
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+            <div class="container">
+                <a class="navbar-brand" href="{{ route('employee.dashboard') }}">
+                    <i class="fas fa-user-graduate me-2"></i>Thông tin nhân viên
+                </a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('employee.dashboard') }}">
+                                <i class="fas fa-home me-1"></i>Trang chủ
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('employee.work-schedule') }}">
+                                <i class="fas fa-calendar-alt me-1"></i>Lịch làm việc
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('employee.salary') }}">
+                                <i class="fas fa-money-check-alt me-1"></i>Lương của tôi
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('employee.resignation') }}">
+                                <i class="fas fa-file-alt me-1"></i>Xin nghỉ phép
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('employee.notifications') }}">
+                                <i class="fas fa-bell me-1"></i>Thông báo
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('employee.feedback') }}">
+                                <i class="fas fa-comment me-1"></i>Góp ý
+                            </a>
+                        </li>
+                        {{-- <li class="nav-item">
                         <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
                             <i class="fas fa-key me-1"></i>Đổi mật khẩu
                         </a>
                     </li> --}}
-                    <li class="nav-item">
-                        <a class="nav-link text-danger" href="#"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Đăng
-                            xuất</a>
-                        <form id="logout-form" action="{{ route('employee.logout') }}" method="POST"
-                            style="display: none;">
-                            @csrf
-                        </form>
-                    </li>
-                </ul>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="#"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Đăng
+                                xuất</a>
+                            <form id="logout-form" action="{{ route('employee.logout') }}" method="POST"
+                                style="display: none;">
+                                @csrf
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    @endif
     <div class="container">
         @yield('content')
         <!-- Modal đổi mật khẩu -->

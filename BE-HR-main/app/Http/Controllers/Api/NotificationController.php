@@ -32,4 +32,13 @@ class NotificationController extends Controller
         Notification::destroy($id);
         return response()->json(null, 204);
     }
+
+    // Đánh dấu đã đọc
+    public function markAsRead($id)
+    {
+        $notification = Notification::findOrFail($id);
+        $notification->is_read = true;
+        $notification->save();
+        return response()->json(['message' => 'Đã đánh dấu đã đọc']);
+    }
 }

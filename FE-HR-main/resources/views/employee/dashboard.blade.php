@@ -59,7 +59,8 @@
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <div><span class="info-label"><i class="fas fa-id-badge me-1"></i> Tên đăng nhập:</span>
-                                        <span class="info-value">{{ $employee['username'] ?? '' }}</span></div>
+                                        <span class="info-value">{{ $employee['username'] ?? '' }}</span>
+                                    </div>
                                     <div><span class="info-label"><i class="fas fa-user me-1"></i> Họ tên:</span> <span
                                             class="info-value">{{ $employee['name'] ?? '' }}</span></div>
                                     <div><span class="info-label"><i class="fas fa-venus-mars me-1"></i> Giới tính:</span>
@@ -186,10 +187,10 @@
                             </div>
                         </div>
                     </div> --}}
-                </div>
-
             </div>
+
         </div>
+    </div>
     </div>
     </div>
     <div class="row g-3 mb-3">
@@ -210,13 +211,51 @@
         </div>
 
         <div class="col-6 col-md-3">
-            <div class="card text-center h-100">
-                <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
-                    <i class="fa fa-calendar-alt fa-2x text-primary mb-2"></i>
-                    <div class="fw-bold mb-1">Lịch làm việc</div>
-                    <span class="text-muted small">Xem lịch làm việc của bạn</span>
+            <a href="{{ route('employee.work-schedule') }}" style="text-decoration:none">
+                <div class="card text-center h-100 shadow-lg border-0"
+                    style="border-radius:1.2rem;transition:box-shadow 0.2s;">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
+                        <div class="rounded-circle mb-2"
+                            style="background:linear-gradient(90deg,#6a11cb 0%,#2575fc 100%);width:56px;height:56px;display:flex;align-items:center;justify-content:center;">
+                            <i class="fa fa-calendar-alt fa-2x text-white"></i>
+                        </div>
+                        <div class="fw-bold text-primary mb-1" style="font-size:1.1rem;">Lịch làm việc</div>
+                        <span class="text-muted small">Xem lịch làm việc của bạn</span>
+                    </div>
                 </div>
-            </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <a href="{{ route('employee.salary') }}" style="text-decoration:none">
+                <div class="card text-center h-100 shadow-lg border-0"
+                    style="border-radius:1.2rem;transition:box-shadow 0.2s;">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
+                        <div class="rounded-circle mb-2"
+                            style="background:linear-gradient(90deg,#6a11cb 0%,#2575fc 100%);width:56px;height:56px;display:flex;align-items:center;justify-content:center;">
+                            <i class="fa fa-money-bill-wave fa-2x text-white"></i>
+                        </div>
+                        <div class="fw-bold text-primary mb-1" style="font-size:1.1rem;">Lương</div>
+                        <span class="text-muted small">Xem bảng lương của bạn</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <a href="{{ route('employee.resignation') }}" style="text-decoration:none">
+                <div class="card text-center h-100 shadow-lg border-0"
+                    style="border-radius:1.2rem;transition:box-shadow 0.2s;">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center py-4">
+                        <div class="rounded-circle mb-2"
+                            style="background:linear-gradient(90deg,#6a11cb 0%,#2575fc 100%);width:56px;height:56px;display:flex;align-items:center;justify-content:center;">
+                            <i class="fa fa-sign-out-alt fa-2x text-white"></i>
+                        </div>
+                        <div class="fw-bold text-primary mb-1" style="font-size:1.1rem;">Xin nghỉ phép</div>
+                        <span class="text-muted small">Gửi đơn xin nghỉ phép</span>
+                    </div>
+                </div>
+            </a>
         </div>
 
         <div class="col-6 col-md-3">

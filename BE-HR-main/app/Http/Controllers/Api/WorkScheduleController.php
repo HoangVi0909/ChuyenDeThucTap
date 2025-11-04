@@ -18,17 +18,40 @@ class WorkScheduleController extends Controller
         try {
             $query = WorkSchedule::with('employee:id,username,name');
 
-            // Lọc theo tháng nếu có
+            // Lọc theo tìm kiếm tên nhân viên, mã nhân viên
+            if ($request->has('employee_search') && $request->employee_search) {
+                $search = $request->employee_search;
+                $query->whereHas('employee', function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('username', 'like', "%{$search}%")
+                      ->orWhere('id', 'like', "%{$search}%");
+                });
+            }
+
+            // Lọc theo ca làm việc
+            if ($request->has('shift') && $request->shift) {
+                $query->where('shift', $request->shift);
+            }
+
+            // Lọc theo khoảng thời gian
+            if ($request->has('date_from') && $request->date_from) {
+                $query->where('work_date', '>=', $request->date_from);
+            }
+            if ($request->has('date_to') && $request->date_to) {
+                $query->where('work_date', '<=', $request->date_to);
+            }
+
+            // Lọc theo tháng nếu có (backward compatibility)
             if ($request->has('month') && $request->has('year')) {
                 $query->inMonth($request->month, $request->year);
             }
 
-            // Lọc theo nhân viên nếu có
+            // Lọc theo nhân viên nếu có (backward compatibility)
             if ($request->has('employee_id')) {
                 $query->where('employee_id', $request->employee_id);
             }
 
-            // Lọc theo tuần nếu có
+            // Lọc theo tuần nếu có (backward compatibility)
             if ($request->has('start_date') && $request->has('end_date')) {
                 $query->inWeek($request->start_date, $request->end_date);
             }

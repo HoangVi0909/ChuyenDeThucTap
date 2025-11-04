@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             WorkScheduleSeeder::class,
             SalarySeeder::class,
             FeedbackSeeder::class,
+            \DemoLeaveResignationNotificationSeeder::class,
         ]);
     }
 }

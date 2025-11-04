@@ -34,7 +34,7 @@ class EmployeeController extends Controller
             'password' => 'required|string|min:8',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
-            'date_of_birth' => 'nullable|date',
+            'birth_date' => 'nullable|date',
             'hire_date' => 'required|date',
             'department_id' => 'required|exists:departments,id',
             'position_id' => 'required|exists:positions,id',
@@ -73,7 +73,7 @@ class EmployeeController extends Controller
             'password' => 'nullable|string|min:8',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
-            'date_of_birth' => 'nullable|date',
+            'birth_date' => 'nullable|date',
             'hire_date' => 'required|date',
             'department_id' => 'required|exists:departments,id',
             'position_id' => 'required|exists:positions,id',
@@ -96,9 +96,43 @@ class EmployeeController extends Controller
 
     public function destroy(Employee $employee)
     {
-        $employee->delete();
-
-        return redirect()->route('admin.employees.index')
-                        ->with('success', 'Nhân viên đã được xóa thành công!');
+        try {
+            $employee->delete();
+            return redirect()->route('admin.employees.index')
+                ->with('success', 'Nhân viên đã được xóa thành công!');
+        } catch (\Illuminate\Database\QueryException $e) {
+            $msg = 'Không thể xóa nhân viên vì còn ràng buộc dữ liệu.';
+            $detail = '';
+            $error = $e->getMessage();
+            if (strpos($error, 'salary') !== false) {
+                $detail .= ' (Bảng lương)';
+            }
+            if (strpos($error, 'leave') !== false) {
+                $detail .= ' (Đơn xin nghỉ phép)';
+            }
+            if (strpos($error, 'notification') !== false) {
+                $detail .= ' (Thông báo)';
+            }
+            if (strpos($error, 'feedback') !== false) {
+                $detail .= ' (Phản hồi)';
+            }
+            if (strpos($error, 'resignation') !== false) {
+                $detail .= ' (Đơn xin nghỉ việc)';
+            }
+            // Thêm vị trí (chức vụ) và phòng ban nếu còn ràng buộc
+            $position = $employee->position ? $employee->position->name : null;
+            $department = $employee->department ? $employee->department->name : null;
+            if ($position) {
+                $detail .= ' | Vị trí: ' . $position;
+            }
+            if ($department) {
+                $detail .= ' | Phòng ban: ' . $department;
+            }
+            if (!$detail) {
+                $detail = ' (Có dữ liệu liên quan ở các bảng khác)';
+            }
+            return redirect()->route('admin.employees.index')
+                ->with('error', $msg . $detail);
+        }
     }
 }
