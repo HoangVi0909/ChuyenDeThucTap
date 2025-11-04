@@ -111,7 +111,7 @@
                         <thead class="table-dark">
                             <tr>
                                 <th>ID</th>
-                                <th>Ảnh</th>
+                                {{-- <th>Ảnh</th> --}}
                                 <th>Tên nhân viên</th>
                                 <th>Giới tính</th>
                                 <th>Email</th>
@@ -128,14 +128,14 @@
                                 @foreach ($employees as $employee)
                                     <tr>
                                         <td class="fw-bold text-primary">#{{ $employee['id'] ?? 'N/A' }}</td>
-                                        <td>
+                                        {{-- <td>
                                             @if (isset($employee['photo_url']) && $employee['photo_url'])
                                                 <img src="{{ $employee['photo_url'] }}" alt="Ảnh nhân viên" width="40"
                                                     class="rounded-circle border">
                                             @else
                                                 <span class="badge bg-secondary">No Image</span>
                                             @endif
-                                        </td>
+                                        </td> --}}
                                         <td class="fw-semibold">{{ $employee['name'] ?? '' }}</td>
                                         <td>{{ $employee['gender'] ?? '' }}</td>
                                         <td>{{ $employee['email'] ?? '' }}</td>

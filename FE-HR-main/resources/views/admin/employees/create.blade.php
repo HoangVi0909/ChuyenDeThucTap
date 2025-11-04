@@ -41,19 +41,20 @@
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}">
+                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
+                                name="email" value="{{ old('email') }}">
                             @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="photo" class="form-label">Ảnh đại diện</label>
                             <input type="file" class="form-control @error('photo') is-invalid @enderror" id="photo"
                                 name="photo">
                             @error('photo')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> --}}
                         <div class="mb-3">
                             <label for="birth_date" class="form-label">Ngày sinh</label>
                             <input type="date" class="form-control @error('birth_date') is-invalid @enderror"
@@ -72,10 +73,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="qualification" class="form-label">Trình độ</label>
-                            <select class="form-select @error('qualification') is-invalid @enderror" id="qualification" name="qualification" required>
+                            <select class="form-select @error('qualification') is-invalid @enderror" id="qualification"
+                                name="qualification" required>
                                 <option value="">Chọn trình độ</option>
-                                <option value="Cao đẳng" {{ old('qualification') == 'Cao đẳng' ? 'selected' : '' }}>Cao đẳng</option>
-                                <option value="Đại học" {{ old('qualification') == 'Đại học' ? 'selected' : '' }}>Đại học</option>
+                                <option value="Cao đẳng" {{ old('qualification') == 'Cao đẳng' ? 'selected' : '' }}>Cao
+                                    đẳng</option>
+                                <option value="Đại học" {{ old('qualification') == 'Đại học' ? 'selected' : '' }}>Đại học
+                                </option>
                             </select>
                             @error('qualification')
                                 <div class="invalid-feedback">{{ $message }}</div>

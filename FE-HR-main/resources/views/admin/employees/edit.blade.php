@@ -34,9 +34,15 @@
                             <label for="gender" class="form-label">Giới tính</label>
                             <select class="form-select @error('gender') is-invalid @enderror" id="gender" name="gender">
                                 <option value="">Chọn giới tính</option>
-                                <option value="Nam" {{ old('gender', $employee['gender'] ?? ($employee->gender ?? '')) == 'Nam' ? 'selected' : '' }}>Nam</option>
-                                <option value="Nữ" {{ old('gender', $employee['gender'] ?? ($employee->gender ?? '')) == 'Nữ' ? 'selected' : '' }}>Nữ</option>
-                                <option value="Khác" {{ old('gender', $employee['gender'] ?? ($employee->gender ?? '')) == 'Khác' ? 'selected' : '' }}>Khác</option>
+                                <option value="Nam"
+                                    {{ old('gender', $employee['gender'] ?? ($employee->gender ?? '')) == 'Nam' ? 'selected' : '' }}>
+                                    Nam</option>
+                                <option value="Nữ"
+                                    {{ old('gender', $employee['gender'] ?? ($employee->gender ?? '')) == 'Nữ' ? 'selected' : '' }}>
+                                    Nữ</option>
+                                <option value="Khác"
+                                    {{ old('gender', $employee['gender'] ?? ($employee->gender ?? '')) == 'Khác' ? 'selected' : '' }}>
+                                    Khác</option>
                             </select>
                             @error('gender')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -44,12 +50,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $employee['email'] ?? ($employee->email ?? '')) }}">
+                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
+                                name="email" value="{{ old('email', $employee['email'] ?? ($employee->email ?? '')) }}">
                             @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="photo" class="form-label">Ảnh đại diện</label>
                             <input type="file" class="form-control @error('photo') is-invalid @enderror" id="photo"
                                 name="photo">
@@ -60,7 +67,7 @@
                             @error('photo')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> --}}
                         <div class="mb-3">
                             <label for="birth_date" class="form-label">Ngày sinh</label>
                             <input type="date" class="form-control @error('birth_date') is-invalid @enderror"
@@ -81,10 +88,15 @@
                         </div>
                         <div class="mb-3">
                             <label for="qualification" class="form-label">Trình độ</label>
-                            <select class="form-select @error('qualification') is-invalid @enderror" id="qualification" name="qualification" required>
+                            <select class="form-select @error('qualification') is-invalid @enderror" id="qualification"
+                                name="qualification" required>
                                 <option value="">Chọn trình độ</option>
-                                <option value="Cao đẳng" {{ old('qualification', $employee['qualification'] ?? ($employee->qualification ?? '')) == 'Cao đẳng' ? 'selected' : '' }}>Cao đẳng</option>
-                                <option value="Đại học" {{ old('qualification', $employee['qualification'] ?? ($employee->qualification ?? '')) == 'Đại học' ? 'selected' : '' }}>Đại học</option>
+                                <option value="Cao đẳng"
+                                    {{ old('qualification', $employee['qualification'] ?? ($employee->qualification ?? '')) == 'Cao đẳng' ? 'selected' : '' }}>
+                                    Cao đẳng</option>
+                                <option value="Đại học"
+                                    {{ old('qualification', $employee['qualification'] ?? ($employee->qualification ?? '')) == 'Đại học' ? 'selected' : '' }}>
+                                    Đại học</option>
                             </select>
                             @error('qualification')
                                 <div class="invalid-feedback">{{ $message }}</div>
