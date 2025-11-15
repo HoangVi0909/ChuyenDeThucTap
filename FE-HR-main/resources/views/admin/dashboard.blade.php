@@ -9,7 +9,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header bg-primary text-white">
-                        <h4><i class="fas fa-tachometer-alt"></i> Dashboard - Hệ thống quản lý nhân sự</h4>
+                        <h4><i class="fas fa-tachometer-alt"></i>Hệ thống quản lý nhân sự</h4>
                     </div>
                     <div class="card-body">
                         <h5>Xin chào, {{ session('admin.name') ?? 'Admin' }}!</h5>
@@ -327,8 +327,8 @@
             @endif --}}
 
 
-        <!-- Quick Actions -->
-        {{-- <div class="row">
+            <!-- Quick Actions -->
+            {{-- <div class="row">
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header bg-secondary text-white">
@@ -363,5 +363,5 @@
                     </div>
                 </div>
             </div> --}}
-    </div>
+        </div>
 @endsection

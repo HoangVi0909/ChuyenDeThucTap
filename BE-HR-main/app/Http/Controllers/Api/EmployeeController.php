@@ -130,6 +130,8 @@ class EmployeeController extends Controller {
         
         // Thực hiện truy vấn
         $employees = $query->get();
+        //$employees = $query->orderBy('id', 'desc')->get();
+
 
         // Transform data để include full URL cho photo
         $employees = $employees->map(function ($employee) {

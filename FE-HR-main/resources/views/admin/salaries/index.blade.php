@@ -87,6 +87,14 @@
             <div class="card-body">
                 @if (isset($salaries) && is_array($salaries) && count($salaries) > 0)
                     <div class="table-responsive">
+                        @php
+                            $perPage = 5; // số bản ghi / trang
+                            $currentPage = request()->get('salaries_page', 1);
+                            $collection = collect($salaries ?? []);
+                            $paginatedSalaries = $collection->forPage($currentPage, $perPage);
+                            $totalPages = ceil($collection->count() / $perPage);
+                        @endphp
+
                         <table class="table table-striped table-hover">
                             <thead class="table-dark">
                                 <tr>
@@ -106,81 +114,78 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($salaries as $salary)
-                                    <tr>
-                                        <td>{{ $salary['employee']['name'] ?? 'N/A' }}</td>
-                                        <td>{{ $salary['employee']['department']['name'] ?? 'N/A' }}</td>
-                                        <td>{{ $salary['month_year'] ?? 'N/A' }}</td>
-                                        <td>{{ number_format($salary['total_hours'] ?? 0, 1) }} giờ</td>
-                                        <td>
-                                            {{ number_format($salary['base_salary'] ?? 0) }} đ
-                                            @if (config('app.debug'))
-                                                <br><small class="text-muted">
-                                                    ({{ number_format($salary['total_hours'] ?? 0, 1) }}h ×
-                                                    {{ number_format($salary['hourly_rate'] ?? 0) }})
-                                                </small>
-                                            @endif
-                                        </td>
-                                        <td>{{ number_format($salary['position_allowance'] ?? 0) }} đ</td>
-                                        <td>{{ number_format($salary['bonus'] ?? 0) }} đ</td>
-                                        <td>{{ number_format($salary['penalty'] ?? 0) }} đ</td>
-                                        @php
-                                            $gross =
-                                                ($salary['base_salary'] ?? 0) +
-                                                ($salary['position_allowance'] ?? 0) +
-                                                ($salary['bonus'] ?? 0) -
-                                                ($salary['penalty'] ?? 0);
-                                            $tax = $salary['tax_amount'] ?? 0;
-                                            $net = $gross - $tax;
-                                        @endphp
-                                        <td><strong>{{ number_format($gross) }} đ</strong></td>
-                                        <td class="text-danger">{{ number_format($tax) }} đ</td>
-                                        <td class="text-success">{{ number_format($net) }} đ</td>
-                                        <td>
-                                            @switch($salary['status'] ?? 'draft')
-                                                @case('draft')
-                                                    <span class="badge bg-warning">Chờ duyệt</span>
-                                                @break
-
-                                                @case('approved')
-                                                    <span class="badge bg-success">Đã duyệt</span>
-                                                @break
-
-                                                @case('paid')
-                                                    <span class="badge bg-info">Đã trả</span>
-                                                @break
-
-                                                @default
-                                                    <span class="badge bg-secondary">N/A</span>
-                                            @endswitch
-                                        </td>
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('admin.salaries.show', $salary['id'] ?? '#') }}"
-                                                    class="btn btn-sm btn-info" title="Xem chi tiết">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href="{{ route('admin.salaries.edit', $salary['id'] ?? '#') }}"
-                                                    class="btn btn-sm btn-primary" title="Chỉnh sửa">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                @if (isset($salary['id']))
-                                                    <form method="POST"
-                                                        action="{{ route('admin.salaries.destroy', $salary['id']) }}"
-                                                        class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
+                                @if($paginatedSalaries->count() > 0)
+                                    @foreach($paginatedSalaries as $salary)
+                                        <tr>
+                                            <td>{{ $salary['employee']['name'] ?? 'N/A' }}</td>
+                                            <td>{{ $salary['employee']['department']['name'] ?? 'N/A' }}</td>
+                                            <td>{{ $salary['month_year'] ?? 'N/A' }}</td>
+                                            <td>{{ number_format($salary['total_hours'] ?? 0, 1) }} giờ</td>
+                                            <td>
+                                                {{ number_format($salary['base_salary'] ?? 0) }} đ
+                                                @if(config('app.debug'))
+                                                    <br><small class="text-muted">({{ number_format($salary['total_hours'] ?? 0, 1) }}h × {{ number_format($salary['hourly_rate'] ?? 0) }})</small>
                                                 @endif
-                                            </div>
-                                        </td>
+                                            </td>
+                                            <td>{{ number_format($salary['position_allowance'] ?? 0) }} đ</td>
+                                            <td>{{ number_format($salary['bonus'] ?? 0) }} đ</td>
+                                            <td>{{ number_format($salary['penalty'] ?? 0) }} đ</td>
+                                            @php
+                                                $gross = ($salary['base_salary'] ?? 0) + ($salary['position_allowance'] ?? 0) + ($salary['bonus'] ?? 0) - ($salary['penalty'] ?? 0);
+                                                $tax = $salary['tax_amount'] ?? 0;
+                                                $net = $gross - $tax;
+                                            @endphp
+                                            <td><strong>{{ number_format($gross) }} đ</strong></td>
+                                            <td class="text-danger">{{ number_format($tax) }} đ</td>
+                                            <td class="text-success">{{ number_format($net) }} đ</td>
+                                            <td>
+                                                @switch($salary['status'] ?? 'draft')
+                                                    @case('draft')
+                                                        <span class="badge bg-warning">Chờ duyệt</span>
+                                                    @break
+                                                    @case('approved')
+                                                        <span class="badge bg-success">Đã duyệt</span>
+                                                    @break
+                                                    @case('paid')
+                                                        <span class="badge bg-info">Đã trả</span>
+                                                    @break
+                                                    @default
+                                                        <span class="badge bg-secondary">N/A</span>
+                                                @endswitch
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="{{ route('admin.salaries.edit', $salary['id'] ?? '#') }}" class="btn btn-sm btn-primary" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
+                                                    @if(isset($salary['id']))
+                                                        <form method="POST" action="{{ route('admin.salaries.destroy', $salary['id']) }}" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-sm btn-danger" title="Xóa"><i class="fas fa-trash"></i></button>
+                                                        </form>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="13" class="text-center">Chưa có dữ liệu lương</td>
                                     </tr>
-                                @endforeach
+                                @endif
                             </tbody>
                         </table>
+                        @if($totalPages > 1)
+                        <nav>
+                            <ul class="pagination justify-content-center mt-3">
+                                @for($i = 1; $i <= $totalPages; $i++)
+                                    <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
+                                        <a class="page-link" href="{{ request()->fullUrlWithQuery(['salaries_page' => $i]) }}">{{ $i }}</a>
+                                    </li>
+                                @endfor
+                            </ul>
+                        </nav>
+                        @endif
+
                     </div>
                 @else
                     <div class="text-center py-5">

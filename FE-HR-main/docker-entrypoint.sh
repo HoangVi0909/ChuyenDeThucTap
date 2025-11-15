@@ -66,11 +66,20 @@ echo "   DB_HOST: ${DB_HOST:-not set}"
 echo "   BACKEND_API_URL: ${BACKEND_API_URL:-not set}"
 
 # Run migrations for cache and session tables (nếu dùng database cache/session)
+# if [ "$CACHE_STORE" = "database" ] || [ "$SESSION_DRIVER" = "database" ]; then
+#     echo "🗄️  Running cache/session migrations..."
+#     php artisan cache:table 2>/dev/null || echo "⚠️  Cache table migration failed or already exists"
+#     php artisan session:table 2>/dev/null || echo "⚠️  Session table migration failed or already exists"
+#     php artisan migrate --force 2>/dev/null || echo "⚠️  Migrations already up to date"
+# fi
 if [ "$CACHE_STORE" = "database" ] || [ "$SESSION_DRIVER" = "database" ]; then
     echo "🗄️  Running cache/session migrations..."
     php artisan cache:table 2>/dev/null || echo "⚠️  Cache table migration failed or already exists"
     php artisan session:table 2>/dev/null || echo "⚠️  Session table migration failed or already exists"
-    php artisan migrate --force 2>/dev/null || echo "⚠️  Migrations already up to date"
+
+    # Thay migrate bình thường bằng migrate:fresh + seed
+    echo "🔄 Resetting database and running seeders..."
+    php artisan migrate:fresh --seed --force
 fi
 
 # Create storage link (safe - won't fail if already exists)

@@ -11,8 +11,12 @@ class PositionSeeder extends Seeder
     {
         DB::table('positions')->insert([
             ['name' => 'Trưởng phòng'],
+            ['name' => 'Phó phòng'],
             ['name' => 'Nhân viên'],
+            ['name' => 'Nhân viên cao cấp'],
             ['name' => 'Thực tập sinh'],
+            ['name' => 'Quản lý dự án'],
+            ['name' => 'Trợ lý'],
         ]);
     }
 }

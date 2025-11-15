@@ -107,10 +107,18 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
+                                        @php
+                        $perPage = 5; // số bản ghi / trang
+                        $currentPage = request()->get('page', 1);
+                        $collection = collect($employees);
+                        $paginated = $collection->forPage($currentPage, $perPage);
+                        $totalPages = ceil($collection->count() / $perPage);
+                    @endphp
+
                     <table class="table table-striped table-hover align-middle" id="dataTable">
                         <thead class="table-dark">
                             <tr>
-                                <th>ID</th>
+                                {{-- <th>ID</th> --}}
                                 {{-- <th>Ảnh</th> --}}
                                 <th>Tên nhân viên</th>
                                 <th>Giới tính</th>
@@ -123,54 +131,49 @@
                                 <th>Hành động</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @if (isset($employees) && is_array($employees) && count($employees) > 0)
-                                @foreach ($employees as $employee)
-                                    <tr>
-                                        <td class="fw-bold text-primary">#{{ $employee['id'] ?? 'N/A' }}</td>
-                                        {{-- <td>
-                                            @if (isset($employee['photo_url']) && $employee['photo_url'])
-                                                <img src="{{ $employee['photo_url'] }}" alt="Ảnh nhân viên" width="40"
-                                                    class="rounded-circle border">
-                                            @else
-                                                <span class="badge bg-secondary">No Image</span>
-                                            @endif
-                                        </td> --}}
-                                        <td class="fw-semibold">{{ $employee['name'] ?? '' }}</td>
-                                        <td>{{ $employee['gender'] ?? '' }}</td>
-                                        <td>{{ $employee['email'] ?? '' }}</td>
-                                        <td>{{ $employee['cccd'] ?? '' }}</td>
-                                        <td>{{ $employee['phone'] ?? '' }}</td>
-                                        <td><span class="badge bg-info">{{ $employee['department']['name'] ?? '' }}</span>
-                                        </td>
-                                        <td><span
-                                                class="badge bg-warning text-dark">{{ $employee['position']['name'] ?? '' }}</span>
-                                        </td>
-                                        <td>{{ $employee['birth_date'] ?? '' }}</td>
-                                        <td>
-                                            <a href="{{ route('admin.employees.show', $employee['id']) }}"
-                                                class="btn btn-info btn-sm" title="Xem chi tiết"><i
-                                                    class="fas fa-eye"></i></a>
-                                            <a href="{{ route('admin.employees.edit', $employee['id']) }}"
-                                                class="btn btn-warning btn-sm" title="Chỉnh sửa"><i
-                                                    class="fas fa-edit"></i></a>
-                                            <form action="{{ route('admin.employees.destroy', $employee['id']) }}"
-                                                method="POST" style="display:inline-block;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm" title="Xóa"><i
-                                                        class="fas fa-trash"></i></button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @else
+                    <tbody>
+                        @if ($paginated->count() > 0)
+                            @foreach ($paginated as $employee)
                                 <tr>
-                                    <td colspan="9" class="text-center">Không có dữ liệu nhân viên</td>
+                                    <td class="fw-semibold">{{ $employee['name'] ?? '' }}</td>
+                                    <td>{{ $employee['gender'] ?? '' }}</td>
+                                    <td>{{ $employee['email'] ?? '' }}</td>
+                                    <td>{{ $employee['cccd'] ?? '' }}</td>
+                                    <td>{{ $employee['phone'] ?? '' }}</td>
+                                    <td><span class="badge bg-info">{{ $employee['department']['name'] ?? '' }}</span></td>
+                                    <td><span class="badge bg-warning text-dark">{{ $employee['position']['name'] ?? '' }}</span></td>
+                                    <td>{{ $employee['birth_date'] ?? '' }}</td>
+                                    <td>
+                                        <a href="{{ route('admin.employees.show', $employee['id']) }}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
+                                        <a href="{{ route('admin.employees.edit', $employee['id']) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                        <form action="{{ route('admin.employees.destroy', $employee['id']) }}" method="POST" style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </td>
                                 </tr>
-                            @endif
-                        </tbody>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="9" class="text-center">Không có dữ liệu nhân viên</td>
+                            </tr>
+                        @endif
+                    </tbody>
                     </table>
+                                        {{-- Pagination --}}
+                    @if($totalPages > 1)
+                        <nav>
+                            <ul class="pagination justify-content-center mt-3">
+                                @for($i = 1; $i <= $totalPages; $i++)
+                                    <li class="page-item {{ $i == $currentPage ? 'active' : '' }}">
+                                        <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $i]) }}">{{ $i }}</a>
+                                    </li>
+                                @endfor
+                            </ul>
+                        </nav>
+                    @endif
+
                 </div>
             </div>
         </div>

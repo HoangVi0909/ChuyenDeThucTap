@@ -13,6 +13,11 @@ class DepartmentSeeder extends Seeder
             ['name' => 'Phòng Nhân sự'],
             ['name' => 'Phòng Kế toán'],
             ['name' => 'Phòng IT'],
+            ['name' => 'Phòng Marketing'],
+            ['name' => 'Phòng Bán hàng'],
+            ['name' => 'Phòng Hành chính'],
+            ['name' => 'Phòng R&D'],
+            ['name' => 'Phòng Chăm sóc khách hàng'],
         ]);
     }
 }

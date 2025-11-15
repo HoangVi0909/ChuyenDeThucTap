@@ -18,9 +18,9 @@
                             <div class="text-uppercase mb-1 fw-bold">Tổng thông báo</div>
                             <div class="h4 mb-0 fw-bold">
                                 @isset($notifications)
-                                    {{ is_array($notifications) ? count($notifications) : 0 }}
+                                {{ is_array($notifications) ? count($notifications) : 0 }}
                                 @else
-                                    0
+                                0
                                 @endisset
                             </div>
                         </div>
@@ -35,6 +35,14 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
+                    @php
+                        $perPage = 5;
+                        $currentPageNotifications = request()->get('notifications_page', 1);
+                        $collectionNotifications = collect($notifications);
+                        $paginatedNotifications = $collectionNotifications->forPage($currentPageNotifications, $perPage);
+                        $totalPagesNotifications = ceil($collectionNotifications->count() / $perPage);
+                    @endphp
+
                     <table class="table table-striped table-hover align-middle">
                         <thead class="table-dark">
                             <tr>
@@ -45,8 +53,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if (is_array($notifications) && count($notifications) > 0)
-                                @foreach ($notifications as $notification)
+                            @if($paginatedNotifications->count() > 0)
+                                @foreach($paginatedNotifications as $notification)
                                     <tr>
                                         <td class="fw-bold text-danger">#{{ $notification['id'] ?? 'N/A' }}</td>
                                         <td class="fw-semibold">{{ $notification['title'] ?? 'N/A' }}</td>
@@ -71,6 +79,19 @@
                             @endif
                         </tbody>
                     </table>
+                    @if($totalPagesNotifications > 1)
+                        <nav>
+                            <ul class="pagination justify-content-center mt-3">
+                                @for($i = 1; $i <= $totalPagesNotifications; $i++)
+                                    <li class="page-item {{ $i == $currentPageNotifications ? 'active' : '' }}">
+                                        <a class="page-link"
+                                            href="{{ request()->fullUrlWithQuery(['notifications_page' => $i]) }}">{{ $i }}</a>
+                                    </li>
+                                @endfor
+                            </ul>
+                        </nav>
+                    @endif
+
                 </div>
             </div>
         </div>

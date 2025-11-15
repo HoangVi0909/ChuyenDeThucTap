@@ -3,7 +3,6 @@
     <div class="container py-4">
         <div class="card profile-card p-4 mx-auto" style="max-width: 600px;">
             <div class="d-flex align-items-center mb-4">
-                <img src="{{ $employee['photo_url'] ?? asset('default.png') }}" class="profile-avatar me-4">
                 <div>
                     <h4 class="mb-1">{{ $employee['name'] ?? '' }}</h4>
                     <div class="text-muted">Tên đăng nhập: {{ $employee['username'] ?? '' }}</div>
