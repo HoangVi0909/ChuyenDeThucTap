@@ -20,8 +20,6 @@ class RoleMiddleware
             return response()->json(['message' => 'Unauthenticated'], 401);
         }
 
-        // roles có thể chứa 1 phần tử duy nhất 'admin,staff' nếu bạn viết sai cú pháp
-        // nhưng trong Laravel truyền đúng 'role:admin,staff' thì ...$roles đã tách thành ['admin','staff']
         if (count($roles) === 1 && str_contains($roles[0], ',')) {
             $roles = array_map('trim', explode(',', $roles[0]));
         }

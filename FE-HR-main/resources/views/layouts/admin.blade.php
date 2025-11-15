@@ -82,11 +82,11 @@
                             Đơn xin nghỉ phép
                         </a>
                     </li>
-                    {{-- <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.internal-notifications') }}">
-                            Thông báo nội bộ
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.notifications.index') }}">
+                            Thông báo
                         </a>
-                    </li> --}}
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.feedback.index') }}">
                             Phản hồi

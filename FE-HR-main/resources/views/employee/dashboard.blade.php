@@ -54,7 +54,6 @@
             <div class="col-md-8">
                 <div class="card profile-card mb-3 p-3">
                     <div class="d-flex align-items-center">
-                        <img src="{{ $employee['photo_url'] ?? asset('default.png') }}" class="profile-avatar me-4">
                         <div class="w-100">
                             <div class="row">
                                 <div class="col-md-6 mb-2">
@@ -187,10 +186,10 @@
                             </div>
                         </div>
                     </div> --}}
-            </div>
+                </div>
 
+            </div>
         </div>
-    </div>
     </div>
     </div>
     <div class="row g-3 mb-3">

@@ -7,9 +7,9 @@
                 <i class="fas fa-money-bill-wave me-2"></i>Quản lý lương
             </h1>
             <div>
-                <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#calculateModal">
+                {{-- <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#calculateModal">
                     <i class="fas fa-calculator me-1"></i>Tính lương tháng
-                </button>
+                </button> --}}
                 <a href="{{ route('admin.salaries.create') }}" class="btn btn-primary">
                     <i class="fas fa-plus me-1"></i>Thêm bản ghi
                 </a>
