@@ -79,7 +79,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.resignation-requests.index') }}">
-                            Đơn xin nghỉ phép
+                            Đơn xin nghỉ
                         </a>
                     </li>
                     <li class="nav-item">
