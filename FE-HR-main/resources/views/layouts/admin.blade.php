@@ -77,11 +77,11 @@
                             Lịch làm việc
                         </a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.resignation-requests.index') }}">
                             Đơn xin nghỉ
                         </a>
-                    </li>
+                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('admin.notifications.index') }}">
                             Thông báo

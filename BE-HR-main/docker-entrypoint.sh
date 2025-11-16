@@ -54,10 +54,11 @@ echo "✅ Database ready!"
 php artisan config:clear
 
 # -----------------------------
-# RESET DB + Seed EVERY TIME
 # -----------------------------
-echo "🗑️ Resetting database and running seeders..."
-php artisan migrate:fresh --seed --force
+# Migrate DB (chỉ khi cần)
+# -----------------------------
+echo "🛠️ Running migrations..."
+php artisan migrate --force
 
 # -----------------------------
 # Storage link & optimize

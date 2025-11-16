@@ -241,7 +241,7 @@
             </a>
         </div>
 
-        <div class="col-6 col-md-3">
+        {{-- <div class="col-6 col-md-3">
             <a href="{{ route('employee.resignation') }}" style="text-decoration:none">
                 <div class="card text-center h-100 shadow-lg border-0"
                     style="border-radius:1.2rem;transition:box-shadow 0.2s;">
@@ -255,7 +255,7 @@
                     </div>
                 </div>
             </a>
-        </div>
+        </div> --}}
 
         <div class="col-6 col-md-3">
             <a href="{{ route('employee.feedback') }}" style="text-decoration:none">

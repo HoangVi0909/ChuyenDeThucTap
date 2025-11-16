@@ -46,11 +46,11 @@
                                 <i class="fas fa-money-check-alt me-1"></i>Lương của tôi
                             </a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link" href="{{ route('employee.resignation') }}">
                                 <i class="fas fa-file-alt me-1"></i>Xin nghỉ phép
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('employee.notifications') }}">
                                 <i class="fas fa-bell me-1"></i>Thông báo
@@ -62,10 +62,10 @@
                             </a>
                         </li>
                         {{-- <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-                            <i class="fas fa-key me-1"></i>Đổi mật khẩu
-                        </a>
-                    </li> --}}
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                <i class="fas fa-key me-1"></i>Đổi mật khẩu
+                            </a>
+                        </li> --}}
                         <li class="nav-item">
                             <a class="nav-link text-danger" href="#"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Đăng
