@@ -91,7 +91,7 @@ Route::prefix('employee')->name('employee.')->group(function () {
     Route::post('login', [App\Http\Controllers\Employee\EmployeeAuthController::class, 'login'])->name('login.post');
     Route::post('logout', [App\Http\Controllers\Employee\EmployeeAuthController::class, 'logout'])->name('logout');
     Route::get('dashboard', [App\Http\Controllers\Employee\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('work-schedule', [App\Http\Controllers\Employee\DashboardController::class, 'workSchedule'])->name('work-schedule');
+    Route::get('work-schedule', [App\Http\Controllers\Employee\WorkScheduleController::class, 'index'])->name('work-schedule');
     Route::get('salary', [EmployeeSalaryController::class, 'index'])->name('salary');
     Route::get('resignation', [App\Http\Controllers\Employee\DashboardController::class, 'resignation'])->name('resignation');
     Route::post('change-password', [App\Http\Controllers\Employee\ChangePasswordController::class, 'change'])->name('change-password');
