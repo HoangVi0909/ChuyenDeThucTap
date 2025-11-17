@@ -10,7 +10,7 @@
             </a>
         </div>
 
-        {{-- Debug Information --}}
+        {{-- Debug Information
         @if (config('app.debug'))
             <div class="alert alert-info">
                 <strong>Debug Info:</strong><br>
@@ -20,7 +20,7 @@
                     Salary keys: {{ implode(', ', array_keys($salary)) }}<br>
                 @endif
             </div>
-        @endif
+        @endif --}}
 
         <div class="card shadow">
             <div class="card-body">

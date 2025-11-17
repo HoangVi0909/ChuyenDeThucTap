@@ -59,6 +59,8 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
         Route::post('calculate', [SalaryManagementController::class, 'calculateForMonth']); // Tính lương tháng
         Route::get('{id}', [SalaryManagementController::class, 'show']); // Chi tiết bản ghi lương
         Route::put('{id}', [SalaryManagementController::class, 'update']); // Cập nhật thưởng/phạt
+        Route::delete('{id}', [SalaryManagementController::class, 'destroy']);
+
         Route::post('{id}/recalculate', [SalaryManagementController::class, 'recalculate']); // Tính lại lương
         Route::post('approve', [SalaryManagementController::class, 'approve']); // Duyệt lương
         Route::post('mark-as-paid', [SalaryManagementController::class, 'markAsPaid']); // Đánh dấu đã trả

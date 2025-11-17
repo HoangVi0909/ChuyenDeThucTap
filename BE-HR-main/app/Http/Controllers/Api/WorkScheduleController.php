@@ -59,6 +59,7 @@ class WorkScheduleController extends Controller
             $perPage = $request->get('per_page', 10);
             $workSchedules = $query->orderBy('work_date', 'desc')
                 ->orderBy('employee_id')
+                //->orderBy('id', 'desc')
                 ->paginate($perPage);
 
             return response()->json($workSchedules);

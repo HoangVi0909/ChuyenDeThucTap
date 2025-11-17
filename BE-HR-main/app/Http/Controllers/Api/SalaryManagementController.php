@@ -209,6 +209,24 @@ class SalaryManagementController extends Controller
             'data' => $salaryRecord->load(['employee.department', 'employee.position'])
         ]);
     }
+public function destroy($id)
+{
+    $salaryRecord = SalaryRecord::find($id);
+
+    if (!$salaryRecord) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Bản ghi lương không tồn tại'
+        ], 404);
+    }
+
+    $salaryRecord->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Đã xoá bản ghi lương thành công'
+    ]);
+}
 
     // Tính lại lương (tính lại số giờ từ work_schedules)
     public function recalculate($id)
