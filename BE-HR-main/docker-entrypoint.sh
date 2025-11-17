@@ -55,11 +55,15 @@ php artisan config:clear
 
 # -----------------------------
 # -----------------------------
-# Migrate DB (chỉ khi cần)
+# # Migrate DB (chỉ khi cần)
+# # -----------------------------
+# echo "🛠️ Running migrations..."
+# php artisan migrate --force
 # -----------------------------
-echo "🛠️ Running migrations..."
-php artisan migrate --force
-
+# Migrate DB (reset & migrate)
+# -----------------------------
+echo "🛠️ Resetting and migrating database..."
+php artisan migrate:fresh --seed --force
 # -----------------------------
 # Storage link & optimize
 # -----------------------------

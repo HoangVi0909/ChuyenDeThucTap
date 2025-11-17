@@ -384,29 +384,29 @@ class SalaryController extends Controller
     /**
      * Tính lương cho tháng
      */
-    public function calculateSalary(Request $request)
-    {
-        if (!session('admin_token')) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+    // public function calculateSalary(Request $request)
+    // {
+    //     if (!session('admin_token')) {
+    //         return response()->json(['error' => 'Unauthorized'], 401);
+    //     }
         
-        $token = session('admin_token');
-        $baseUrl = config('services.backend_api.url');
+    //     $token = session('admin_token');
+    //     $baseUrl = config('services.backend_api.url');
         
-        try {
-            $data = $request->only(['employee_id', 'month']);
-            $response = Http::withToken($token)->post("{$baseUrl}/api/admin/salary-management/calculate", $data);
+    //     try {
+    //         $data = $request->only(['employee_id', 'month']);
+    //         $response = Http::withToken($token)->post("{$baseUrl}/api/admin/salary-management/calculate", $data);
             
-            if ($response->successful()) {
-                return response()->json($response->json());
-            } else {
-                return response()->json(['error' => 'Không thể tính lương'], 500);
-            }
-        } catch (\Exception $e) {
-            Log::error('Calculate salary error: ' . $e->getMessage());
-            return response()->json(['error' => 'Lỗi kết nối API'], 500);
-        }
-    }
+    //         if ($response->successful()) {
+    //             return response()->json($response->json());
+    //         } else {
+    //             return response()->json(['error' => 'Không thể tính lương'], 500);
+    //         }
+    //     } catch (\Exception $e) {
+    //         Log::error('Calculate salary error: ' . $e->getMessage());
+    //         return response()->json(['error' => 'Lỗi kết nối API'], 500);
+    //     }
+    // }
 
     /**
      * Duyệt lương

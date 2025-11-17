@@ -228,29 +228,29 @@ public function destroy($id)
     ]);
 }
 
-    // Tính lại lương (tính lại số giờ từ work_schedules)
-    public function recalculate($id)
-    {
-        $salaryRecord = SalaryRecord::findOrFail($id);
+    // // Tính lại lương (tính lại số giờ từ work_schedules)
+    // public function recalculate($id)
+    // {
+    //     $salaryRecord = SalaryRecord::findOrFail($id);
         
-        // Tính lại số giờ từ lịch làm việc
-        $salaryRecord->calculateHoursFromSchedules();
+    //     // Tính lại số giờ từ lịch làm việc
+    //     $salaryRecord->calculateHoursFromSchedules();
         
-        // Cập nhật lương theo giờ từ employee hiện tại
-        $employee = $salaryRecord->employee;
-        $salaryRecord->hourly_rate = $employee->hourly_rate ?? 0;
-        $salaryRecord->position_allowance = $employee->position->allowance ?? 0;
+    //     // Cập nhật lương theo giờ từ employee hiện tại
+    //     $employee = $salaryRecord->employee;
+    //     $salaryRecord->hourly_rate = $employee->hourly_rate ?? 0;
+    //     $salaryRecord->position_allowance = $employee->position->allowance ?? 0;
         
-        // Tính lại tổng lương
-        $salaryRecord->calculateSalary();
-        $salaryRecord->save();
+    //     // Tính lại tổng lương
+    //     $salaryRecord->calculateSalary();
+    //     $salaryRecord->save();
         
-        return response()->json([
-            'success' => true,
-            'message' => 'Đã tính lại lương',
-            'data' => $salaryRecord->load(['employee.department', 'employee.position'])
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Đã tính lại lương',
+    //         'data' => $salaryRecord->load(['employee.department', 'employee.position'])
+    //     ]);
+    // }
 
     // Duyệt bản ghi lương
     public function approve(Request $request)
@@ -287,43 +287,43 @@ public function destroy($id)
         ]);
     }
 
-    // Báo cáo lương theo tháng
-    public function monthlyReport(Request $request)
-    {
-        $request->validate([
-            'month_year' => 'required|string|regex:/^\d{4}-\d{2}$/'
-        ]);
+    // // Báo cáo lương theo tháng
+    // public function monthlyReport(Request $request)
+    // {
+    //     $request->validate([
+    //         'month_year' => 'required|string|regex:/^\d{4}-\d{2}$/'
+    //     ]);
 
-        $monthYear = $request->month_year;
+    //     $monthYear = $request->month_year;
         
-        $salaryRecords = SalaryRecord::with(['employee.department', 'employee.position'])
-                                    ->forMonth($monthYear)
-                                    ->get();
+    //     $salaryRecords = SalaryRecord::with(['employee.department', 'employee.position'])
+    //                                 ->forMonth($monthYear)
+    //                                 ->get();
 
-        $summary = [
-            'total_employees' => $salaryRecords->count(),
-            'total_hours' => $salaryRecords->sum('total_hours'),
-            'total_base_salary' => $salaryRecords->sum('base_salary'),
-            'total_allowance' => $salaryRecords->sum('position_allowance'),
-            'total_bonus' => $salaryRecords->sum('bonus'),
-            'total_penalty' => $salaryRecords->sum('penalty'),
-            'total_salary' => $salaryRecords->sum('total_salary'),
-            'by_status' => [
-                'draft' => $salaryRecords->where('status', 'draft')->count(),
-                'approved' => $salaryRecords->where('status', 'approved')->count(),
-                'paid' => $salaryRecords->where('status', 'paid')->count(),
-            ]
-        ];
+    //     $summary = [
+    //         'total_employees' => $salaryRecords->count(),
+    //         'total_hours' => $salaryRecords->sum('total_hours'),
+    //         'total_base_salary' => $salaryRecords->sum('base_salary'),
+    //         'total_allowance' => $salaryRecords->sum('position_allowance'),
+    //         'total_bonus' => $salaryRecords->sum('bonus'),
+    //         'total_penalty' => $salaryRecords->sum('penalty'),
+    //         'total_salary' => $salaryRecords->sum('total_salary'),
+    //         'by_status' => [
+    //             'draft' => $salaryRecords->where('status', 'draft')->count(),
+    //             'approved' => $salaryRecords->where('status', 'approved')->count(),
+    //             'paid' => $salaryRecords->where('status', 'paid')->count(),
+    //         ]
+    //     ];
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'month_year' => $monthYear,
-                'summary' => $summary,
-                'details' => $salaryRecords
-            ]
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => [
+    //             'month_year' => $monthYear,
+    //             'summary' => $summary,
+    //             'details' => $salaryRecords
+    //         ]
+    //     ]);
+    // }
 
     // EMPLOYEE METHODS - Xem lương cá nhân
     public function mySalaryRecords(Request $request)
